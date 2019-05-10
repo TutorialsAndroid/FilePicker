@@ -10,10 +10,19 @@ Android Library to select files/directories from Device Storage.
 
 ### Installation
 
-* Library is also Available in MavenCentral, So just put this in your app dependencies to use it:
-```gradle
-    
-```
+Add it in your root build.gradle at the end of repositories:
+
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+Step 2. Add the dependency
+
+	dependencies {
+	        implementation 'com.github.TutorialsAndroid:FilePicker:v1.0.19'
+	}
 
 ### Usage
 ## FilePickerDialog
