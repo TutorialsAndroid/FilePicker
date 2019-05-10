@@ -101,7 +101,7 @@ Marshmallow and above requests for the permission on runtime. You should overrid
 
 ### FilePickerPreference
 
-1. Start by declaring [FilePickerPreference](https://github.com/angads25/android-filepicker/wiki/filepicker-preference) in your settings xml file as:
+1. Start by declaring [FilePickerPreference] in your settings xml file as:
 
     ```xml
        <com.github.tutorialsandroid.filepicker.view.FilePickerPreference
