@@ -1,5 +1,13 @@
-# FilePicker
+# FilePicker [![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat)] [![License](https://img.shields.io/badge/License-Apache%202.0-orange.svg)](https://opensource.org/licenses/Apache-2.0)
 Android Library to select files/directories from Device Storage.
+
+**Library available at JitPack.io**
+
+[![](https://jitpack.io/v/TutorialsAndroid/FilePicker.svg)](https://jitpack.io/#TutorialsAndroid/FilePicker)
+
+### Screenshot
+
+![](https://github.com/TutorialsAndroid/FilePicker/blob/master/screenshots/device-2019-05-10-182300.png)
 
 ### Features
 
@@ -145,8 +153,6 @@ Marshmallow and above requests for the permission on runtime. You should overrid
 * `extensions` must not have '.'.
 * `extensions` should end with ':' , also have ':' between two extensions.
 eg. /sdcard:/mnt:
-
-### Screenshot
 
 ### License
     Copyright (C) 2019 FilePicker
