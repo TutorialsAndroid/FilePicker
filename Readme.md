@@ -29,7 +29,7 @@ Add it in your root build.gradle at the end of repositories:
 Step 2. Add the dependency
 
 	dependencies {
-	        implementation 'com.github.TutorialsAndroid:FilePicker:v1.0.19'
+	        implementation 'com.github.TutorialsAndroid:FilePicker:v3.0.19'
 	}
 
 ### Usage
@@ -104,7 +104,7 @@ Marshmallow and above requests for the permission on runtime. You should overrid
 1. Start by declaring [FilePickerPreference] in your settings xml file as:
 
     ```xml
-       <com.github.tutorialsandroid.filepicker.view.FilePickerPreference
+       <com.kinda.developer.filepicker.view.FilePickerPreference
            xmlns:app="http://schemas.android.com/apk/res-auto"
            android:key="your_preference_key"
            android:title="Pick a Directory"
