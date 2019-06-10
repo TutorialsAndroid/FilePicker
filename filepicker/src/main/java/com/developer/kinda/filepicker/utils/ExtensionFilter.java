@@ -1,7 +1,7 @@
-package com.github.tutorialsandroid.filepicker.utils;
+package com.developer.kinda.filepicker.utils;
 
-import com.github.tutorialsandroid.filepicker.model.DialogConfigs;
-import com.github.tutorialsandroid.filepicker.model.DialogProperties;
+import com.developer.kinda.filepicker.model.DialogConfigs;
+import com.developer.kinda.filepicker.model.DialogProperties;
 
 import java.io.File;
 import java.io.FileFilter;

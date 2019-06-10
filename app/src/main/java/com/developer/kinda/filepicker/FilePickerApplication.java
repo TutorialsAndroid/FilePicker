@@ -1,4 +1,4 @@
-package com.github.tutorialsandroid.filepicker;
+package com.developer.kinda.filepicker;
 
 import android.app.Application;
 import com.squareup.leakcanary.LeakCanary;

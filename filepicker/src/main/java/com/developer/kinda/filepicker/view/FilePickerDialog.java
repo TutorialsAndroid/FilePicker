@@ -1,4 +1,4 @@
-package com.github.tutorialsandroid.filepicker.view;
+package com.developer.kinda.filepicker.view;
 
 import android.Manifest;
 import android.app.Activity;
@@ -15,17 +15,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.tutorialsandroid.filepicker.R;
-import com.github.tutorialsandroid.filepicker.controller.DialogSelectionListener;
-import com.github.tutorialsandroid.filepicker.controller.NotifyItemChecked;
-import com.github.tutorialsandroid.filepicker.controller.adapters.FileListAdapter;
-import com.github.tutorialsandroid.filepicker.model.DialogConfigs;
-import com.github.tutorialsandroid.filepicker.model.DialogProperties;
-import com.github.tutorialsandroid.filepicker.model.FileListItem;
-import com.github.tutorialsandroid.filepicker.model.MarkedItemList;
-import com.github.tutorialsandroid.filepicker.utils.ExtensionFilter;
-import com.github.tutorialsandroid.filepicker.utils.Utility;
-import com.github.tutorialsandroid.filepicker.widget.MaterialCheckbox;
+import com.developer.kinda.filepicker.R;
+import com.developer.kinda.filepicker.controller.DialogSelectionListener;
+import com.developer.kinda.filepicker.controller.NotifyItemChecked;
+import com.developer.kinda.filepicker.controller.adapters.FileListAdapter;
+import com.developer.kinda.filepicker.model.DialogConfigs;
+import com.developer.kinda.filepicker.model.DialogProperties;
+import com.developer.kinda.filepicker.model.FileListItem;
+import com.developer.kinda.filepicker.model.MarkedItemList;
+import com.developer.kinda.filepicker.utils.ExtensionFilter;
+import com.developer.kinda.filepicker.utils.Utility;
+import com.developer.kinda.filepicker.widget.MaterialCheckbox;
 
 import java.io.File;
 import java.util.ArrayList;

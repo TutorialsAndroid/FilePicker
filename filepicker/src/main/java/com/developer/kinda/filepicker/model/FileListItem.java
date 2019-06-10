@@ -1,4 +1,4 @@
-package com.github.tutorialsandroid.filepicker.model;
+package com.developer.kinda.filepicker.model;
 
 import java.util.Locale;
 

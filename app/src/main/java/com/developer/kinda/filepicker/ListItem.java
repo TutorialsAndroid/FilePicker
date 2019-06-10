@@ -1,4 +1,4 @@
-package com.github.tutorialsandroid.filepicker;
+package com.developer.kinda.filepicker;
 
 public class ListItem  {
 

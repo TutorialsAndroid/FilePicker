@@ -1,12 +1,12 @@
-package com.github.tutorialsandroid.filepicker;
+package com.developer.kinda.filepicker;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,10 +15,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
-import com.github.tutorialsandroid.filepicker.controller.DialogSelectionListener;
-import com.github.tutorialsandroid.filepicker.model.DialogConfigs;
-import com.github.tutorialsandroid.filepicker.model.DialogProperties;
-import com.github.tutorialsandroid.filepicker.view.FilePickerDialog;
+import com.developer.kinda.filepicker.controller.DialogSelectionListener;
+import com.developer.kinda.filepicker.model.DialogConfigs;
+import com.developer.kinda.filepicker.model.DialogProperties;
+import com.developer.kinda.filepicker.view.FilePickerDialog;
 import java.io.File;
 import java.util.ArrayList;
 

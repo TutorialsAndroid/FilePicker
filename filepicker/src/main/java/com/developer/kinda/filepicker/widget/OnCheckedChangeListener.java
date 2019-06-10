@@ -1,4 +1,4 @@
-package com.github.tutorialsandroid.filepicker.widget;
+package com.developer.kinda.filepicker.widget;
 
 public interface OnCheckedChangeListener {
 

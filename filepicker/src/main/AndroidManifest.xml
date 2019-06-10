@@ -1,6 +1,6 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.github.tutorialsandroid.filepicker">
+    package="com.developer.kinda.filepicker">
 
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"/>

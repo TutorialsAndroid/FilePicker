@@ -1,20 +1,17 @@
-package com.github.tutorialsandroid.filepicker;
+package com.developer.kinda.filepicker;
 
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import com.github.tutorialsandroid.filepicker.view.FilePickerPreference;
+import com.developer.kinda.filepicker.view.FilePickerPreference;
 
 public class SettingsActivity extends PreferenceActivity implements Preference.OnPreferenceChangeListener {
 

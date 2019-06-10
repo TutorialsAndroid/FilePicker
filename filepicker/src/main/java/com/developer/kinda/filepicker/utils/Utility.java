@@ -1,9 +1,9 @@
-package com.github.tutorialsandroid.filepicker.utils;
+package com.developer.kinda.filepicker.utils;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
 
-import com.github.tutorialsandroid.filepicker.model.FileListItem;
+import com.developer.kinda.filepicker.model.FileListItem;
 
 import java.io.File;
 import java.util.ArrayList;

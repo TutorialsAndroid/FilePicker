@@ -45,7 +45,7 @@
             style="?android:attr/textViewStyle"/>
     </LinearLayout>
 
-    <com.github.tutorialsandroid.filepicker.widget.MaterialCheckbox
+    <com.developer.kinda.filepicker.widget.MaterialCheckbox
         android:id="@+id/file_mark"
         android:layout_width="@dimen/checkbox_dimens"
         android:layout_height="@dimen/checkbox_dimens"

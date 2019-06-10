@@ -1,4 +1,4 @@
-package com.github.tutorialsandroid.filepicker.controller;
+package com.developer.kinda.filepicker.controller;
 
 /**
  * Interface definition for a callback to be invoked

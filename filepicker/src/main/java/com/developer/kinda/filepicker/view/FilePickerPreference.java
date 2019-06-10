@@ -1,4 +1,4 @@
-package com.github.tutorialsandroid.filepicker.view;
+package com.developer.kinda.filepicker.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -9,10 +9,10 @@ import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.github.tutorialsandroid.filepicker.R;
-import com.github.tutorialsandroid.filepicker.controller.DialogSelectionListener;
-import com.github.tutorialsandroid.filepicker.model.DialogConfigs;
-import com.github.tutorialsandroid.filepicker.model.DialogProperties;
+import com.developer.kinda.filepicker.R;
+import com.developer.kinda.filepicker.controller.DialogSelectionListener;
+import com.developer.kinda.filepicker.model.DialogConfigs;
+import com.developer.kinda.filepicker.model.DialogProperties;
 
 import java.io.File;
 

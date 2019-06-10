@@ -1,4 +1,4 @@
-package com.github.tutorialsandroid.filepicker.controller.adapters;
+package com.developer.kinda.filepicker.controller.adapters;
 
 import android.content.Context;
 import android.os.Build;
@@ -12,14 +12,14 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.github.tutorialsandroid.filepicker.R;
-import com.github.tutorialsandroid.filepicker.controller.NotifyItemChecked;
-import com.github.tutorialsandroid.filepicker.model.DialogConfigs;
-import com.github.tutorialsandroid.filepicker.model.DialogProperties;
-import com.github.tutorialsandroid.filepicker.model.FileListItem;
-import com.github.tutorialsandroid.filepicker.model.MarkedItemList;
-import com.github.tutorialsandroid.filepicker.widget.MaterialCheckbox;
-import com.github.tutorialsandroid.filepicker.widget.OnCheckedChangeListener;
+import com.developer.kinda.filepicker.R;
+import com.developer.kinda.filepicker.controller.NotifyItemChecked;
+import com.developer.kinda.filepicker.model.DialogConfigs;
+import com.developer.kinda.filepicker.model.DialogProperties;
+import com.developer.kinda.filepicker.model.FileListItem;
+import com.developer.kinda.filepicker.model.MarkedItemList;
+import com.developer.kinda.filepicker.widget.MaterialCheckbox;
+import com.developer.kinda.filepicker.widget.OnCheckedChangeListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

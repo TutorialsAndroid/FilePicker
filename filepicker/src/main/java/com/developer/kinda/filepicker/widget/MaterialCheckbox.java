@@ -1,4 +1,4 @@
-package com.github.tutorialsandroid.filepicker.widget;
+package com.developer.kinda.filepicker.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -10,7 +10,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.github.tutorialsandroid.filepicker.R;
+import com.developer.kinda.filepicker.R;
 
 public class MaterialCheckbox extends View {
     private Context context;
