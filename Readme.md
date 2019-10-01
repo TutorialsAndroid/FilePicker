@@ -1,9 +1,13 @@
-# FilePicker ![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat) [![Known Vulnerabilities](https://snyk.io/test/github/TutorialsAndroid/FilePicker/badge.svg?targetFile=filepicker%2Fbuild.gradle)](https://snyk.io/test/github/TutorialsAndroid/FilePicker?targetFile=filepicker%2Fbuild.gradle) [![License](https://img.shields.io/badge/License-Apache%202.0-orange.svg)](https://opensource.org/licenses/Apache-2.0) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-FilePicker-yellow.svg?style=flat)](https://android-arsenal.com/details/1/7663) 
+![](https://github.com/TutorialsAndroid/FilePicker/blob/master/sample/src/main/res/mipmap-xxhdpi/ic_launcher.png)
+
+# FilePicker ![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat) [![License](https://img.shields.io/badge/License-Apache%202.0-orange.svg)](https://opensource.org/licenses/Apache-2.0) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-FilePicker-yellow.svg?style=flat)](https://android-arsenal.com/details/1/7663) 
 Android Library to select files/directories from Device Storage
 
 **Library available at JitPack.io**
 
 [![](https://jitpack.io/v/TutorialsAndroid/FilePicker.svg)](https://jitpack.io/#TutorialsAndroid/FilePicker)
+
+`Latest version of this library is migrated to androidx`
 
 ### Screenshot
 
@@ -29,7 +33,7 @@ Add it in your root build.gradle at the end of repositories:
 Step 2. Add the dependency
 
 	dependencies {
-	        implementation 'com.github.TutorialsAndroid:FilePicker:v3.0.19'
+	        implementation 'com.github.TutorialsAndroid:FilePicker:v4.0.19'
 	}
 
 ### Usage
@@ -104,7 +108,7 @@ Marshmallow and above requests for the permission on runtime. You should overrid
 1. Start by declaring [FilePickerPreference] in your settings xml file as:
 
     ```xml
-       <com.kinda.developer.filepicker.view.FilePickerPreference
+       <com.developer.filepicker.view.FilePickerPreference
            xmlns:app="http://schemas.android.com/apk/res-auto"
            android:key="your_preference_key"
            android:title="Pick a Directory"
