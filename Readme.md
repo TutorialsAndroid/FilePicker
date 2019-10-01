@@ -9,9 +9,6 @@ Android Library to select files/directories from Device Storage
 
 `Latest version of this library is migrated to androidx`
 
-## Download My Kinda App. A new way to debate on the topic
-[![](https://github.com/TutorialsAndroid/Spoti/blob/master/art/google-play-badge.png)](https://bit.ly/kindadownload)
-
 ### Screenshot
 
 ![](https://github.com/TutorialsAndroid/FilePicker/blob/master/screenshots/device-2019-05-10-182300.png)
