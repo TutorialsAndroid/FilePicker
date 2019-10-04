@@ -37,6 +37,19 @@ Step 2. Add the dependency
 	}
 
 ### Usage
+
+**If you are targeting Android 10 or higher. Set this to your manifest**
+```
+<manifest ... >
+  <!-- This attribute is "false" by default on apps targeting
+       Android 10 or higher. -->
+  <application 
+       android:requestLegacyExternalStorage="true" ........ >
+    ......
+  </application>
+</manifest>
+```
+
 ## FilePickerDialog
 1. Start by creating an instance of `DialogProperties`.
 
