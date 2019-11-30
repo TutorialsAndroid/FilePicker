@@ -8,10 +8,12 @@ import android.os.Parcelable;
 import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.View;
+
 import com.developer.filepicker.R;
 import com.developer.filepicker.controller.DialogSelectionListener;
 import com.developer.filepicker.model.DialogConfigs;
 import com.developer.filepicker.model.DialogProperties;
+
 import java.io.File;
 
 /**
@@ -72,7 +74,7 @@ public class FilePickerPreference extends Preference implements DialogSelectionL
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
-        if (state == null || !(state instanceof SavedState)) {
+        if (!(state instanceof SavedState)) {
             super.onRestoreInstanceState(state);
             return;
         }
@@ -187,6 +189,9 @@ public class FilePickerPreference extends Preference implements DialogSelectionL
             }
             else if (attr == R.styleable.FilePickerPreference_title_text) {
                 titleText=tarr.getString(R.styleable.FilePickerPreference_title_text);
+            }
+            else if (attr == R.styleable.FilePickerPreference_show_hidden_files) {
+                properties.show_hidden_files = tarr.getBoolean(R.styleable.FilePickerPreference_show_hidden_files, false);
             }
         }
         tarr.recycle();

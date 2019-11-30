@@ -68,6 +68,7 @@ Step 2. Add the dependency
         properties.error_dir = new File(DialogConfigs.DEFAULT_DIR);
         properties.offset = new File(DialogConfigs.DEFAULT_DIR);
         properties.extensions = null;
+        properties.show_hidden_files = false;
     ```
 
 3. Next create an instance of `FilePickerDialog`, and pass `Context` and `DialogProperties` references as parameters. Optional: You can change the title of dialog. Default is current directory name. Set the positive button string. Default is Select. Set the negative button string. Defalut is Cancel.
@@ -132,7 +133,8 @@ Marshmallow and above requests for the permission on runtime. You should overrid
            app:root_dir="/sdcard"
            app:selection_mode="multi_mode"
            app:selection_type="dir_select"
-           app:extensions="txt:pdf:"/>
+           app:extensions="txt:pdf:"
+           app:show_hidden_files="false"/>
     ```
 
 2. Implement [Preference.OnPreferenceChangeListener](https://developer.android.com/reference/android/preference/Preference.OnPreferenceChangeListener.html) to class requiring selected values and `Override` `onPreferenceChange(Preference, Object)` method. Check for preference key using [Preference](https://developer.android.com/reference/android/preference/Preference.html) reference.

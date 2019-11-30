@@ -31,5 +31,9 @@
             name="title_text"
             format="string"/>
 
+        <attr
+            name="show_hidden_files"
+            format="boolean"/>
+
     </declare-styleable>
 </resources>
