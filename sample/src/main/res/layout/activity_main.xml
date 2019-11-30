@@ -134,6 +134,13 @@
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:hint="@string/hint_offset"
                 android:id="@+id/offset" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:id="@+id/show_hidden_files"
+                android:text="@string/show_hidden_files"/>
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.core.widget.NestedScrollView>
 

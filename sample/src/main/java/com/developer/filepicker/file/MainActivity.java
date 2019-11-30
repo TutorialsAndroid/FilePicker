@@ -3,18 +3,20 @@ package com.developer.filepicker.file;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.developer.filepicker.controller.DialogSelectionListener;
 import com.developer.filepicker.model.DialogConfigs;
@@ -89,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         final EditText extension = findViewById(R.id.extensions);
         final EditText root = findViewById(R.id.root);
         final EditText offset = findViewById(R.id.offset);
+        final CheckBox show_hidden_files = findViewById(R.id.show_hidden_files);
         Button apply = findViewById(R.id.apply);
         Button showDialog = findViewById(R.id.show_dialog);
         apply.setOnClickListener(new View.OnClickListener() {
@@ -140,6 +143,8 @@ public class MainActivity extends AppCompatActivity {
                     //Setting Parent Directory to Default SDCARD.
                     properties.offset=new File(DialogConfigs.DEFAULT_DIR);
                 }
+
+                properties.show_hidden_files = show_hidden_files.isChecked();
 
                 //Setting Alternative Directory, in case root is not accessible.This will be
                 //used.
