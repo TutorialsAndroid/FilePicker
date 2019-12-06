@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.developer.filepicker.R;
 import com.developer.filepicker.controller.DialogSelectionListener;
 import com.developer.filepicker.controller.NotifyItemChecked;
@@ -25,6 +26,7 @@ import com.developer.filepicker.model.MarkedItemList;
 import com.developer.filepicker.utils.ExtensionFilter;
 import com.developer.filepicker.utils.Utility;
 import com.developer.filepicker.widget.MaterialCheckbox;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -209,7 +211,7 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
             dname.setText(currLoc.getName());
             dir_path.setText(currLoc.getAbsolutePath());
             setTitle();
-            internalList = Utility.prepareFileListEntries(internalList, currLoc, filter);
+            internalList = Utility.prepareFileListEntries(internalList, currLoc, filter, properties.show_hidden_files);
             mFileListAdapter.notifyDataSetChanged();
             listView.setOnItemClickListener(this);
         }
@@ -240,7 +242,7 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
                         parent.setTime(currLoc.lastModified());
                         internalList.add(parent);
                     }
-                    internalList = Utility.prepareFileListEntries(internalList, currLoc, filter);
+                    internalList = Utility.prepareFileListEntries(internalList, currLoc, filter, properties.show_hidden_files);
                     mFileListAdapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(context, R.string.error_dir_access, Toast.LENGTH_SHORT).show();
@@ -422,7 +424,7 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
                     parent.setTime(currLoc.lastModified());
                     internalList.add(parent);
                 }
-                internalList = Utility.prepareFileListEntries(internalList, currLoc, filter);
+                internalList = Utility.prepareFileListEntries(internalList, currLoc, filter, properties.show_hidden_files);
                 mFileListAdapter.notifyDataSetChanged();
             }
             setTitle();
