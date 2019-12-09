@@ -10,6 +10,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.developer.filepicker.R;
 import com.developer.filepicker.controller.NotifyItemChecked;
 import com.developer.filepicker.model.DialogConfigs;
@@ -18,10 +19,10 @@ import com.developer.filepicker.model.FileListItem;
 import com.developer.filepicker.model.MarkedItemList;
 import com.developer.filepicker.widget.MaterialCheckbox;
 import com.developer.filepicker.widget.OnCheckedChangeListener;
-import java.text.SimpleDateFormat;
+
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * @author akshay sunil masram
@@ -105,14 +106,16 @@ public class FileListAdapter extends BaseAdapter{
         }
         holder.type_icon.setContentDescription(item.getFilename());
         holder.name.setText(item.getFilename());
-        SimpleDateFormat sdate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        SimpleDateFormat stime = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
+        DateFormat dateFormatter = android.text.format.DateFormat.getMediumDateFormat(context);
+        DateFormat timeFormatter = android.text.format.DateFormat.getTimeFormat(context);
+        //SimpleDateFormat sdate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        //SimpleDateFormat stime = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
         Date date = new Date(item.getTime());
         if(i==0&&item.getFilename().startsWith(context.getString(R.string.label_parent_dir))) {
             holder.type.setText(R.string.label_parent_directory);
         }
         else {
-            holder.type.setText(context.getString(R.string.last_edit) + sdate.format(date) + ", " + stime.format(date));
+            holder.type.setText(String.format(context.getString(R.string.last_edit), dateFormatter.format(date), timeFormatter.format(date)));
         }
         if(holder.fmark.getVisibility()==View.VISIBLE) {
             if(i==0&&item.getFilename().startsWith(context.getString(R.string.label_parent_dir)))
