@@ -1,8 +1,8 @@
 package com.developer.filepicker.file;
 
-public class ListItem  {
+public class ListItem {
 
-    private String name,path;
+    private String name, path;
 
     public String getName() {
         return name;

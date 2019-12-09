@@ -23,7 +23,7 @@ public class FilePickerPreference extends Preference implements DialogSelectionL
 
     private FilePickerDialog mDialog;
     private DialogProperties properties;
-    private String titleText=null;
+    private String titleText = null;
 
     public FilePickerPreference(Context context) {
         super(context);
@@ -96,9 +96,9 @@ public class FilePickerPreference extends Preference implements DialogSelectionL
 
     @Override
     public void onSelectedFilePaths(String[] files) {
-        StringBuilder buff=new StringBuilder();
-        for(String path:files)
-        {   buff.append(path).append(":");
+        StringBuilder buff = new StringBuilder();
+        for (String path : files) {
+            buff.append(path).append(":");
         }
         String dFiles = buff.toString();
         if (isPersistent()) {
@@ -106,8 +106,7 @@ public class FilePickerPreference extends Preference implements DialogSelectionL
         }
         try {
             getOnPreferenceChangeListener().onPreferenceChange(this, dFiles);
-        }
-        catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
@@ -118,8 +117,8 @@ public class FilePickerPreference extends Preference implements DialogSelectionL
         return false;
     }
 
-    public void setProperties(DialogProperties properties)
-    {   mDialog.setProperties(properties);
+    public void setProperties(DialogProperties properties) {
+        mDialog.setProperties(properties);
     }
 
     private static class SavedState extends BaseSavedState {
@@ -141,56 +140,49 @@ public class FilePickerPreference extends Preference implements DialogSelectionL
         }
 
         public static final Creator<SavedState> CREATOR =
-        new Creator<SavedState>() {
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
+                new Creator<SavedState>() {
+                    public SavedState createFromParcel(Parcel in) {
+                        return new SavedState(in);
+                    }
 
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        };
+                    public SavedState[] newArray(int size) {
+                        return new SavedState[size];
+                    }
+                };
     }
 
     private void initProperties(AttributeSet attrs) {
-        TypedArray tarr=getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.FilePickerPreference,0,0);
+        TypedArray tarr = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.FilePickerPreference, 0, 0);
         final int N = tarr.getIndexCount();
-        for (int i = 0; i < N; ++i)
-        {   int attr = tarr.getIndex(i);
+        for (int i = 0; i < N; ++i) {
+            int attr = tarr.getIndex(i);
             if (attr == R.styleable.FilePickerPreference_selection_mode) {
-                properties.selection_mode=tarr.getInteger(R.styleable.FilePickerPreference_selection_mode, DialogConfigs.SINGLE_MODE);
-            }
-            else if (attr == R.styleable.FilePickerPreference_selection_type) {
-                properties.selection_type=tarr.getInteger(R.styleable.FilePickerPreference_selection_type,DialogConfigs.FILE_SELECT);
-            }
-            else if (attr == R.styleable.FilePickerPreference_root_dir) {
-                String root_dir=tarr.getString(R.styleable.FilePickerPreference_root_dir);
-                if(root_dir!=null&&!root_dir.equals(""))
-                {   properties.root=new File(root_dir);
+                properties.selection_mode = tarr.getInteger(R.styleable.FilePickerPreference_selection_mode, DialogConfigs.SINGLE_MODE);
+            } else if (attr == R.styleable.FilePickerPreference_selection_type) {
+                properties.selection_type = tarr.getInteger(R.styleable.FilePickerPreference_selection_type, DialogConfigs.FILE_SELECT);
+            } else if (attr == R.styleable.FilePickerPreference_root_dir) {
+                String root_dir = tarr.getString(R.styleable.FilePickerPreference_root_dir);
+                if (root_dir != null && !root_dir.equals("")) {
+                    properties.root = new File(root_dir);
                 }
-            }
-            else if (attr == R.styleable.FilePickerPreference_error_dir) {
-                String error_dir=tarr.getString(R.styleable.FilePickerPreference_error_dir);
-                if(error_dir!=null&&!error_dir.equals(""))
-                {   properties.error_dir=new File(error_dir);
+            } else if (attr == R.styleable.FilePickerPreference_error_dir) {
+                String error_dir = tarr.getString(R.styleable.FilePickerPreference_error_dir);
+                if (error_dir != null && !error_dir.equals("")) {
+                    properties.error_dir = new File(error_dir);
                 }
-            }
-            else if (attr == R.styleable.FilePickerPreference_offset_dir) {
-                String offset_dir=tarr.getString(R.styleable.FilePickerPreference_offset_dir);
-                if(offset_dir!=null&&!offset_dir.equals(""))
-                {   properties.offset=new File(offset_dir);
+            } else if (attr == R.styleable.FilePickerPreference_offset_dir) {
+                String offset_dir = tarr.getString(R.styleable.FilePickerPreference_offset_dir);
+                if (offset_dir != null && !offset_dir.equals("")) {
+                    properties.offset = new File(offset_dir);
                 }
-            }
-            else if (attr == R.styleable.FilePickerPreference_extensions) {
-                String extensions=tarr.getString(R.styleable.FilePickerPreference_extensions);
-                if(extensions!=null&&!extensions.equals(""))
-                {   properties.extensions= extensions.split(":");
+            } else if (attr == R.styleable.FilePickerPreference_extensions) {
+                String extensions = tarr.getString(R.styleable.FilePickerPreference_extensions);
+                if (extensions != null && !extensions.equals("")) {
+                    properties.extensions = extensions.split(":");
                 }
-            }
-            else if (attr == R.styleable.FilePickerPreference_title_text) {
-                titleText=tarr.getString(R.styleable.FilePickerPreference_title_text);
-            }
-            else if (attr == R.styleable.FilePickerPreference_show_hidden_files) {
+            } else if (attr == R.styleable.FilePickerPreference_title_text) {
+                titleText = tarr.getString(R.styleable.FilePickerPreference_title_text);
+            } else if (attr == R.styleable.FilePickerPreference_show_hidden_files) {
                 properties.show_hidden_files = tarr.getBoolean(R.styleable.FilePickerPreference_show_hidden_files, false);
             }
         }
