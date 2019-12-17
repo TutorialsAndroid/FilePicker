@@ -128,8 +128,7 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
                     int color;
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                         color = context.getResources().getColor(R.color.colorAccent, context.getTheme());
-                    }
-                    else {
+                    } else {
                         color = context.getResources().getColor(R.color.colorAccent);
                     }
                     select.setTextColor(Color.argb(128, Color.red(color), Color.green(color), Color.blue(color)));
@@ -139,8 +138,7 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
                     int color;
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                         color = context.getResources().getColor(R.color.colorAccent, context.getTheme());
-                    }
-                    else {
+                    } else {
                         color = context.getResources().getColor(R.color.colorAccent);
                     }
                     select.setTextColor(color);
@@ -188,8 +186,8 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
         super.onStart();
         positiveBtnNameStr = (
                 positiveBtnNameStr == null ?
-                context.getResources().getString(R.string.choose_button_label) :
-                positiveBtnNameStr
+                        context.getResources().getString(R.string.choose_button_label) :
+                        positiveBtnNameStr
         );
         select.setText(positiveBtnNameStr);
         if (Utility.checkStorageAccessPermissions(context)) {

@@ -9,6 +9,7 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
+
 import com.developer.filepicker.R;
 
 /**
@@ -58,32 +59,30 @@ public class MaterialCheckbox extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if(isChecked()) {
+        if (isChecked()) {
             paint.reset();
             paint.setAntiAlias(true);
-            bounds.set(minDim / 10, minDim / 10, minDim - (minDim/10), minDim - (minDim/10));
+            bounds.set(minDim / 10, minDim / 10, minDim - (minDim / 10), minDim - (minDim / 10));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 paint.setColor(getResources().getColor(R.color.colorAccent, context.getTheme()));
-            }
-            else {
+            } else {
                 paint.setColor(getResources().getColor(R.color.colorAccent));
             }
             canvas.drawRoundRect(bounds, minDim / 8, minDim / 8, paint);
 
             paint.setColor(Color.parseColor("#FFFFFF"));
-            paint.setStrokeWidth(minDim/10);
+            paint.setStrokeWidth(minDim / 10);
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeJoin(Paint.Join.BEVEL);
             canvas.drawPath(tick, paint);
-        }
-        else {
+        } else {
             paint.reset();
             paint.setAntiAlias(true);
-            bounds.set(minDim / 10, minDim / 10, minDim - (minDim/10), minDim - (minDim/10));
+            bounds.set(minDim / 10, minDim / 10, minDim - (minDim / 10), minDim - (minDim / 10));
             paint.setColor(Color.parseColor("#C1C1C1"));
             canvas.drawRoundRect(bounds, minDim / 8, minDim / 8, paint);
 
-            bounds.set(minDim / 5, minDim / 5, minDim - (minDim/5), minDim - (minDim/5));
+            bounds.set(minDim / 5, minDim / 5, minDim - (minDim / 5), minDim - (minDim / 5));
             paint.setColor(Color.parseColor("#FFFFFF"));
             canvas.drawRect(bounds, paint);
         }
@@ -95,7 +94,7 @@ public class MaterialCheckbox extends View {
         int height = getMeasuredHeight();
         int width = getMeasuredWidth();
         minDim = Math.min(width, height);
-        bounds.set(minDim / 10, minDim / 10, minDim - (minDim/10), minDim - (minDim/10));
+        bounds.set(minDim / 10, minDim / 10, minDim - (minDim / 10), minDim - (minDim / 10));
         tick.moveTo(minDim / 4, minDim / 2);
         tick.lineTo(minDim / 2.5f, minDim - (minDim / 3));
 
