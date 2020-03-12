@@ -7,6 +7,7 @@ import java.util.Set;
  * @author akshay sunil masram
  */
 public class MarkedItemList {
+
     private static HashMap<String,FileListItem> ourInstance = new HashMap<>();
 
     public static void addSelectedItem(FileListItem item) {
@@ -32,12 +33,12 @@ public class MarkedItemList {
 
     public static String[] getSelectedPaths() {
         Set<String> paths = ourInstance.keySet();
-        String[] fpaths = new String[paths.size()];
+        String[] strings = new String[paths.size()];
         int i=0;
         for(String path:paths)
-        {   fpaths[i++]=path;
+        {   strings[i++]=path;
         }
-        return fpaths;
+        return strings;
     }
 
     public static int getFileCount() {

@@ -8,6 +8,7 @@ import com.developer.filepicker.model.FileListItem;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 
 /**
  * @author akshay sunil masram
@@ -25,9 +26,11 @@ public class Utility {
         }
     }
 
-    public static ArrayList<FileListItem> prepareFileListEntries(ArrayList<FileListItem> internalList, File inter, ExtensionFilter filter, boolean show_hidden_files) {
+    public static ArrayList<FileListItem>
+    prepareFileListEntries(ArrayList<FileListItem> internalList, File inter,
+                           ExtensionFilter filter, boolean show_hidden_files) {
         try {
-            for (File name : inter.listFiles(filter)) {
+            for (File name : Objects.requireNonNull(inter.listFiles(filter))) {
                 if (name.canRead()) {
                     if(name.getName().startsWith(".") && !show_hidden_files) continue;
                     FileListItem item = new FileListItem();
@@ -45,15 +48,5 @@ public class Utility {
             internalList=new ArrayList<>();
         }
         return internalList;
-    }
-
-    private boolean hasSupportLibraryInClasspath() {
-        try {
-            Class.forName("com.android.support:appcompat-v7");
-            return true;
-        } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
-        }
-        return false;
     }
 }

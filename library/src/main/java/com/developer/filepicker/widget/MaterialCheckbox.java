@@ -16,6 +16,7 @@ import com.developer.filepicker.R;
  * @author akshay sunil masram
  */
 public class MaterialCheckbox extends View {
+
     private Context context;
     private int minDim;
     private Paint paint;

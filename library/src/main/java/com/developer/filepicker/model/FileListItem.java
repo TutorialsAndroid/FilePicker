@@ -6,6 +6,7 @@ import java.util.Locale;
  * @author akshay sunil masram
  */
 public class FileListItem implements Comparable<FileListItem> {
+
     private String filename,location;
     private boolean directory,marked;
     private long time;

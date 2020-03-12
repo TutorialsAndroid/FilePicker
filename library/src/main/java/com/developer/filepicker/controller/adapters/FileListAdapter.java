@@ -28,12 +28,14 @@ import java.util.Date;
  * @author akshay sunil masram
  */
 public class FileListAdapter extends BaseAdapter {
+
     private ArrayList<FileListItem> listItem;
     private Context context;
     private DialogProperties properties;
     private NotifyItemChecked notifyItemChecked;
 
-    public FileListAdapter(ArrayList<FileListItem> listItem, Context context, DialogProperties properties) {
+    public FileListAdapter(ArrayList<FileListItem> listItem, Context context,
+                           DialogProperties properties) {
         this.listItem = listItem;
         this.context = context;
         this.properties = properties;
@@ -58,7 +60,8 @@ public class FileListAdapter extends BaseAdapter {
     public View getView(final int i, View view, ViewGroup viewGroup) {
         final ViewHolder holder;
         if (view == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.dialog_file_list_item, viewGroup, false);
+            view = LayoutInflater.from(context).inflate(R.layout.dialog_file_list_item,
+                    viewGroup, false);
             holder = new ViewHolder(view);
             view.setTag(holder);
         } else {
@@ -66,35 +69,41 @@ public class FileListAdapter extends BaseAdapter {
         }
         final FileListItem item = listItem.get(i);
         if (MarkedItemList.hasItem(item.getLocation())) {
-            Animation animation = AnimationUtils.loadAnimation(context, R.anim.marked_item_animation);
+            Animation animation = AnimationUtils.loadAnimation(context,
+                    R.anim.marked_item_animation);
             view.setAnimation(animation);
         } else {
-            Animation animation = AnimationUtils.loadAnimation(context, R.anim.unmarked_item_animation);
+            Animation animation = AnimationUtils.loadAnimation(context,
+                    R.anim.unmarked_item_animation);
             view.setAnimation(animation);
         }
         if (item.isDirectory()) {
             holder.type_icon.setImageResource(R.mipmap.ic_type_folder);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                holder.type_icon.setColorFilter(context.getResources().getColor(R.color.colorPrimary, context.getTheme()));
+                holder.type_icon.setColorFilter(context.getResources()
+                        .getColor(R.color.colorPrimary, context.getTheme()));
             } else {
-                holder.type_icon.setColorFilter(context.getResources().getColor(R.color.colorPrimary));
+                holder.type_icon.setColorFilter(context.getResources()
+                        .getColor(R.color.colorPrimary));
             }
             if (properties.selection_type == DialogConfigs.FILE_SELECT) {
-                holder.fmark.setVisibility(View.INVISIBLE);
+                holder.checkbox.setVisibility(View.INVISIBLE);
             } else {
-                holder.fmark.setVisibility(View.VISIBLE);
+                holder.checkbox.setVisibility(View.VISIBLE);
             }
         } else {
             holder.type_icon.setImageResource(R.mipmap.ic_type_file);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                holder.type_icon.setColorFilter(context.getResources().getColor(R.color.colorAccent, context.getTheme()));
+                holder.type_icon.setColorFilter(context.getResources()
+                        .getColor(R.color.colorAccent, context.getTheme()));
             } else {
-                holder.type_icon.setColorFilter(context.getResources().getColor(R.color.colorAccent));
+                holder.type_icon.setColorFilter(context.getResources()
+                        .getColor(R.color.colorAccent));
             }
             if (properties.selection_type == DialogConfigs.DIR_SELECT) {
-                holder.fmark.setVisibility(View.INVISIBLE);
+                holder.checkbox.setVisibility(View.INVISIBLE);
             } else {
-                holder.fmark.setVisibility(View.VISIBLE);
+                holder.checkbox.setVisibility(View.VISIBLE);
             }
         }
         holder.type_icon.setContentDescription(item.getFilename());
@@ -105,20 +114,21 @@ public class FileListAdapter extends BaseAdapter {
         if (i == 0 && item.getFilename().startsWith(context.getString(R.string.label_parent_dir))) {
             holder.type.setText(R.string.label_parent_directory);
         } else {
-            holder.type.setText(String.format(context.getString(R.string.last_edit), dateFormatter.format(date), timeFormatter.format(date)));
+            holder.type.setText(String.format(context.getString(R.string.last_edit),
+                    dateFormatter.format(date), timeFormatter.format(date)));
         }
-        if (holder.fmark.getVisibility() == View.VISIBLE) {
+        if (holder.checkbox.getVisibility() == View.VISIBLE) {
             if (i == 0 && item.getFilename().startsWith(context.getString(R.string.label_parent_dir))) {
-                holder.fmark.setVisibility(View.INVISIBLE);
+                holder.checkbox.setVisibility(View.INVISIBLE);
             }
             if (MarkedItemList.hasItem(item.getLocation())) {
-                holder.fmark.setChecked(true);
+                holder.checkbox.setChecked(true);
             } else {
-                holder.fmark.setChecked(false);
+                holder.checkbox.setChecked(false);
             }
         }
 
-        holder.fmark.setOnCheckedChangedListener(new OnCheckedChangeListener() {
+        holder.checkbox.setOnCheckedChangedListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(MaterialCheckbox checkbox, boolean isChecked) {
                 item.setMarked(isChecked);
@@ -140,13 +150,13 @@ public class FileListAdapter extends BaseAdapter {
     private class ViewHolder {
         ImageView type_icon;
         TextView name, type;
-        MaterialCheckbox fmark;
+        MaterialCheckbox checkbox;
 
         ViewHolder(View itemView) {
             name = itemView.findViewById(R.id.fname);
             type = itemView.findViewById(R.id.ftype);
             type_icon = itemView.findViewById(R.id.image_type);
-            fmark = itemView.findViewById(R.id.file_mark);
+            checkbox = itemView.findViewById(R.id.file_mark);
         }
     }
 

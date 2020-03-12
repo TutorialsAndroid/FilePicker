@@ -10,6 +10,7 @@ import java.util.Locale;
  * @author akshay sunil masram
  */
 public class ExtensionFilter implements FileFilter {
+
     private final String[] validExtensions;
     private DialogProperties properties;
 
@@ -22,6 +23,7 @@ public class ExtensionFilter implements FileFilter {
         }
         this.properties=properties;
     }
+
     @Override
     public boolean accept(File file) {
         if (file.isDirectory()&&file.canRead())

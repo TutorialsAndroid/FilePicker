@@ -6,6 +6,7 @@ import java.io.File;
  * @author akshay sunil masram
  */
 public class DialogProperties {
+
     public int selection_mode;
     public int selection_type;
     public File root;
