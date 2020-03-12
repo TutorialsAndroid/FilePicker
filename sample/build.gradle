@@ -20,7 +20,11 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    //Library Implementation
     implementation project(':library')
+
+    //AndroidX Libraries
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
 }
