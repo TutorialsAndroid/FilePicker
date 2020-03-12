@@ -5,9 +5,11 @@ import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.View;
+
+
+import androidx.preference.Preference;
 
 import com.developer.filepicker.R;
 import com.developer.filepicker.controller.DialogSelectionListener;
@@ -51,13 +53,8 @@ public class FilePickerPreference extends Preference implements DialogSelectionL
     }
 
     @Override
-    protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
-        super.onSetInitialValue(restorePersistedValue, defaultValue);
-    }
-
-    @Override
-    protected void onBindView(View view) {
-        super.onBindView(view);
+    protected void onSetInitialValue(Object defaultValue) {
+        super.onSetInitialValue(defaultValue);
     }
 
     @Override

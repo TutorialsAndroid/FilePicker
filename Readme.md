@@ -117,53 +117,6 @@ Marshmallow and above requests for the permission on runtime. You should overrid
 
     That's It. You are good to proceed further.
 
-### FilePickerPreference
-
-1. Start by declaring [FilePickerPreference] in your settings xml file as:
-
-    ```xml
-       <com.developer.filepicker.view.FilePickerPreference
-           xmlns:app="http://schemas.android.com/apk/res-auto"
-           android:key="your_preference_key"
-           android:title="Pick a Directory"
-           android:summary="Just a Summary"
-           android:defaultValue="/sdcard:/mnt"
-           app:titleText="Select Directories"
-           app:error_dir="/mnt"
-           app:root_dir="/sdcard"
-           app:selection_mode="multi_mode"
-           app:selection_type="dir_select"
-           app:extensions="txt:pdf:"
-           app:show_hidden_files="false"/>
-    ```
-
-2. Implement [Preference.OnPreferenceChangeListener](https://developer.android.com/reference/android/preference/Preference.OnPreferenceChangeListener.html) to class requiring selected values and `Override` `onPreferenceChange(Preference, Object)` method. Check for preference key using [Preference](https://developer.android.com/reference/android/preference/Preference.html) reference.
-
-    ```java
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object o)
-        {   if(preference.getKey().equals("your_preference_key"))
-            {   ...
-            }
-            return false;
-        }
-    ```
-3. Typecast `Object o` into `String` Object and use `split(String)` function in `String` class to get array of selected files.
-
-    ```java
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object o)
-        {   if(preference.getKey().equals("your_preference_key"))
-            {   String value=(String)o;
-                String arr[]=value.split(":");
-                ...
-                ...
-            }
-            return false;
-        }
-    ```
-
-    That's It. You are good to move further.
 
 ### Important:
 * `defaultValue`, `error_dir`, `root_dir`, `offset_dir` must have valid directory/file paths.

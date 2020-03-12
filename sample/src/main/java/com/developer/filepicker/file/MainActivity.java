@@ -1,6 +1,5 @@
 package com.developer.filepicker.file;
 
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Menu;
@@ -52,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
         dialog.setTitle("Select a File");
         dialog.setPositiveBtnName("Select");
         dialog.setNegativeBtnName("Cancel");
+      //  properties.selection_mode = DialogConfigs.MULTI_MODE;
+      //  properties.selection_type = DialogConfigs.DIR_SELECT;
+
         RadioGroup modeRadio = findViewById(R.id.modeRadio);
         modeRadio.check(R.id.singleRadio);
         modeRadio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -218,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.settings) {
-            startActivity(new Intent(this, SettingsActivity.class));
+            //startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);

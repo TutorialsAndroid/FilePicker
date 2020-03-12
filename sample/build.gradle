@@ -7,8 +7,8 @@ android {
         applicationId "com.developer.filepicker.file"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 5
-        versionName "5.0.19"
+        versionCode 6
+        versionName "6.0.19"
     }
     buildTypes {
         release {
@@ -22,7 +22,6 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':library')
     implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.preference:preference:1.1.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
-    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 }
