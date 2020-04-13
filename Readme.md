@@ -3,13 +3,9 @@
 # FilePicker ![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat) [![License](https://img.shields.io/badge/License-Apache%202.0-orange.svg)](https://opensource.org/licenses/Apache-2.0) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-FilePicker-yellow.svg?style=flat)](https://android-arsenal.com/details/1/7663) 
 Android Library to select files/directories from Device Storage
 
-## Hire-Us
+## Hire-Me
 
-<p align="center">Are you having trouble in your android projects then let us help you with it just Email Us. We love our users, so feel free to visit https://asm.life
-
-## Download Our New App
-
-[Cocktail Friendship App](https://play.google.com/store/apps/details?id=developer.cocktail)
+<p align="center">Are you having trouble in your android projects then let me help you with it just Email Us. We love our users, so feel free to visit https://asm.life
 
 ## Contributors
 
