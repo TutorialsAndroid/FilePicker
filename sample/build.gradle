@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 31
 
     defaultConfig {
         applicationId "com.developer.filepicker.file"
         minSdkVersion 19
-        targetSdkVersion 29
-        versionCode 6
-        versionName "6.0.19"
+        targetSdkVersion 31
+        versionCode 7
+        versionName "8.0.20"
     }
     buildTypes {
         release {
@@ -25,6 +25,6 @@ dependencies {
     implementation project(':library')
 
     //AndroidX Libraries
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
 }
