@@ -43,7 +43,7 @@ Add it in your root build.gradle at the end of repositories:
 Step 2. Add the dependency
 
 	dependencies {
-	        implementation 'com.github.TutorialsAndroid:FilePicker:v8.0.19'
+	        implementation 'com.github.TutorialsAndroid:FilePicker:v9.0.0'
 	}
 
 ### Usage
@@ -84,7 +84,7 @@ Step 2. Add the dependency
 3. Next create an instance of `FilePickerDialog`, and pass `Context` and `DialogProperties` references as parameters. Optional: You can change the title of dialog. Default is current directory name. Set the positive button string. Default is Select. Set the negative button string. Defalut is Cancel.
 
     ```java
-        FilePickerDialog dialog = new FilePickerDialog(MainActivity.this,properties);
+        FilePickerDialog dialog = new FilePickerDialog(MainActivity.this, MainActivity.this,properties);
         dialog.setTitle("Select a File");
     ```
 
@@ -124,6 +124,22 @@ Marshmallow and above requests for the permission on runtime. You should overrid
             }
         }
 ```
+
+### Android13 and Above Instructions:
+If your app targets Android 13 or higher and needs to access media files that other apps have created, you must request one or more of the following granular media permissions instead of the ```READ_EXTERNAL_STORAGE permission```:
+As of Android 13 and above you can only browse and select Images,Videos and Audio files only. This library is still in development and I'm looking for contributors to make this library more better
+```
+    Type of media	  |  Permission to request
+    
+    Images and photos |	READ_MEDIA_IMAGES
+    Videos	          | READ_MEDIA_VIDEO
+    Audio files	      | READ_MEDIA_AUDIO
+```
+Before you access another app's media files, verify that the user has granted the appropriate granular media permissions to your app.
+
+If you request both the ```READ_MEDIA_IMAGES``` permission and the ```READ_MEDIA_VIDEO``` permission at the same time, only one system permission dialog appears.
+
+If your app was previously granted the ```READ_EXTERNAL_STORAGE``` permission, then any requested ```READ_MEDIA_*``` permissions are granted automatically when upgrading.
 
     That's It. You are good to proceed further.
 

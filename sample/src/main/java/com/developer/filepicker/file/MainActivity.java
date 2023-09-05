@@ -1,6 +1,8 @@
 package com.developer.filepicker.file;
 
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,7 +15,10 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,6 +36,15 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<ListItem> listItem;
     private FileListAdapter mFileListAdapter;
 
+    private static final int REQUEST_STORAGE_PERMISSIONS = 123;
+    private String readPermission = android.Manifest.permission.READ_EXTERNAL_STORAGE;
+    private String writePermission = android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
+    private static final int REQUEST_MEDIA_PERMISSIONS = 456;
+    private String audioPermission = android.Manifest.permission.READ_MEDIA_AUDIO;
+    private String imagesPermission = android.Manifest.permission.READ_MEDIA_IMAGES;
+    private String videoPermission = android.Manifest.permission.READ_MEDIA_VIDEO;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -47,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         final DialogProperties properties = new DialogProperties();
 
         //Instantiate FilePickerDialog with Context and DialogProperties.
-        dialog = new FilePickerDialog(MainActivity.this, properties);
+        dialog = new FilePickerDialog(MainActivity.this, MainActivity.this, properties);
         dialog.setTitle("Select a File");
         dialog.setPositiveBtnName("Select");
         dialog.setNegativeBtnName("Cancel");
@@ -163,8 +177,30 @@ public class MainActivity extends AppCompatActivity {
         showDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Showing dialog when Show Dialog button is clicked.
-                dialog.show();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    // Check for permissions and request them if needed
+                    if (ContextCompat.checkSelfPermission(MainActivity.this, audioPermission) == PackageManager.PERMISSION_GRANTED &&
+                            ContextCompat.checkSelfPermission(MainActivity.this, imagesPermission) == PackageManager.PERMISSION_GRANTED &&
+                            ContextCompat.checkSelfPermission(MainActivity.this, videoPermission) == PackageManager.PERMISSION_GRANTED) {
+                        // You have the permissions, you can proceed with your media file operations.
+                        //Showing dialog when Show Dialog button is clicked.
+                        dialog.show();
+                    } else {
+                        // You don't have the permissions. Request them.
+                        ActivityCompat.requestPermissions(MainActivity.this, new String[]{audioPermission, imagesPermission, videoPermission}, REQUEST_MEDIA_PERMISSIONS);
+                    }
+                } else {
+                    // Check for permissions and request them if needed
+                    if (ContextCompat.checkSelfPermission(MainActivity.this, readPermission) == PackageManager.PERMISSION_GRANTED &&
+                            ContextCompat.checkSelfPermission(MainActivity.this, writePermission) == PackageManager.PERMISSION_GRANTED) {
+                        // You have the permissions, you can proceed with your file operations.
+                        //Showing dialog when Show Dialog button is clicked.
+                        dialog.show();
+                    } else {
+                        // You don't have the permissions. Request them.
+                        ActivityCompat.requestPermissions(MainActivity.this, new String[]{readPermission, writePermission}, REQUEST_STORAGE_PERMISSIONS);
+                    }
+                }
             }
         });
 
@@ -197,18 +233,82 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Add this method to show Dialog when the required permission has been granted to the app.
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        if (requestCode == FilePickerDialog.EXTERNAL_READ_PERMISSION_GRANT) {
+//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                if (dialog != null) {
+//                    //Show dialog if the read permission has been granted.
+//                    dialog.show();
+//                }
+//            } else {
+//                //Permission has not been granted. Notify the user.
+//                Toast.makeText(MainActivity.this, "Permission is Required for getting list of files", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == FilePickerDialog.EXTERNAL_READ_PERMISSION_GRANT) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_STORAGE_PERMISSIONS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (dialog != null) {
-                    //Show dialog if the read permission has been granted.
-                    dialog.show();
-                }
+                // Permissions were granted. You can proceed with your file operations.
+                //Showing dialog when Show Dialog button is clicked.
+                dialog.show();
             } else {
-                //Permission has not been granted. Notify the user.
-                Toast.makeText(MainActivity.this, "Permission is Required for getting list of files", Toast.LENGTH_SHORT).show();
+                // Permissions were denied. Show a rationale dialog or inform the user about the importance of these permissions.
+                showRationaleDialog();
             }
+        }
+
+        if (requestCode == REQUEST_MEDIA_PERMISSIONS) {
+            if (grantResults.length > 0 && areAllPermissionsGranted(grantResults)) {
+                // Permissions were granted. You can proceed with your media file operations.
+                //Showing dialog when Show Dialog button is clicked.
+                dialog.show();
+            } else {
+                // Permissions were denied. Show a rationale dialog or inform the user about the importance of these permissions.
+                showRationaleDialog();
+            }
+        }
+    }
+
+    private boolean areAllPermissionsGranted(int[] grantResults) {
+        for (int result : grantResults) {
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void showRationaleDialog() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, readPermission) ||
+                ActivityCompat.shouldShowRequestPermissionRationale(this, writePermission)) {
+            // Show a rationale dialog explaining why the permissions are necessary.
+            new AlertDialog.Builder(this)
+                    .setTitle("Permission Needed")
+                    .setMessage("This app needs storage permissions to read and write files.")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Request permissions when the user clicks OK.
+                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{readPermission, writePermission}, REQUEST_STORAGE_PERMISSIONS);
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            // Handle the case where the user cancels the permission request.
+                        }
+                    })
+                    .show();
+        } else {
+            // Request permissions directly if no rationale is needed.
+            ActivityCompat.requestPermissions(this, new String[]{readPermission, writePermission}, REQUEST_STORAGE_PERMISSIONS);
         }
     }
 

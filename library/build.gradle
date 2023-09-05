@@ -1,14 +1,12 @@
 apply plugin: 'com.android.library'
-
-//apply plugin: 'com.github.dcendents.android-maven'
 group='com.github.TutorialsAndroid'
 
 android {
-    compileSdkVersion 31
+    compileSdk 34
 
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 31
+        targetSdkVersion 34
     }
     buildTypes {
         release {
@@ -16,7 +14,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    lintOptions {
+    namespace 'com.developer.filepicker'
+    lint {
         abortOnError false
     }
 }

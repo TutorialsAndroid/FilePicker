@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -38,7 +39,10 @@ import java.util.Objects;
 @SuppressWarnings("unused")
 public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickListener {
 
+    private static final String TAG = FilePickerDialog.class.getSimpleName();
+
     private final Context context;
+    private Activity activity;
     private ListView listView;
     private TextView dname, dir_path, title;
     private DialogProperties properties;
@@ -53,6 +57,7 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
 
     public static final int EXTERNAL_READ_PERMISSION_GRANT = 112;
 
+    @Deprecated
     public FilePickerDialog(Context context) {
         super(context);
         this.context = context;
@@ -61,6 +66,16 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
         internalList = new ArrayList<>();
     }
 
+    public FilePickerDialog(Activity activity, Context context) {
+        super(context);
+        this.activity = activity;
+        this.context = context;
+        properties = new DialogProperties();
+        filter = new ExtensionFilter(properties);
+        internalList = new ArrayList<>();
+    }
+
+    @Deprecated
     public FilePickerDialog(Context context, DialogProperties properties, int themeResId) {
         super(context, themeResId);
         this.context = context;
@@ -69,8 +84,27 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
         internalList = new ArrayList<>();
     }
 
+    public FilePickerDialog(Activity activity, Context context, DialogProperties properties, int themeResId) {
+        super(context, themeResId);
+        this.activity = activity;
+        this.context = context;
+        this.properties = properties;
+        filter = new ExtensionFilter(properties);
+        internalList = new ArrayList<>();
+    }
+
+    @Deprecated
     public FilePickerDialog(Context context, DialogProperties properties) {
         super(context);
+        this.context = context;
+        this.properties = properties;
+        filter = new ExtensionFilter(properties);
+        internalList = new ArrayList<>();
+    }
+
+    public FilePickerDialog(Activity activity, Context context, DialogProperties properties) {
+        super(context);
+        this.activity = activity;
         this.context = context;
         this.properties = properties;
         filter = new ExtensionFilter(properties);
@@ -197,31 +231,48 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
                         positiveBtnNameStr
         );
         select.setText(positiveBtnNameStr);
-        if (Utility.checkStorageAccessPermissions(context)) {
-            File currLoc;
-            internalList.clear();
-            if (properties.offset.isDirectory() && validateOffsetPath()) {
-                currLoc = new File(properties.offset.getAbsolutePath());
-                FileListItem parent = new FileListItem();
-                parent.setFilename(context.getString(R.string.label_parent_dir));
-                parent.setDirectory(true);
-                parent.setLocation(Objects.requireNonNull(currLoc.getParentFile())
-                        .getAbsolutePath());
-                parent.setTime(currLoc.lastModified());
-                internalList.add(parent);
-            } else if (properties.root.exists() && properties.root.isDirectory()) {
-                currLoc = new File(properties.root.getAbsolutePath());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (Utility.checkMediaAccessPermissions(context)) {
+                //Permission granted...
+                dir();
             } else {
-                currLoc = new File(properties.error_dir.getAbsolutePath());
+                //Permissions are not granted...
+                Log.d(TAG, "Permissions are not granted");
             }
-            dname.setText(currLoc.getName());
-            dir_path.setText(currLoc.getAbsolutePath());
-            setTitle();
-            internalList = Utility.prepareFileListEntries(internalList, currLoc, filter,
-                    properties.show_hidden_files);
-            mFileListAdapter.notifyDataSetChanged();
-            listView.setOnItemClickListener(this);
+        } else {
+            if (Utility.checkStorageAccessPermissions(context)) {
+                Log.d(TAG, "Permission granted");
+                dir();
+            } else {
+                Log.d(TAG, "Permission not granted");
+            }
         }
+    }
+
+    private void dir() {
+        File currLoc;
+        internalList.clear();
+        if (properties.offset.isDirectory() && validateOffsetPath()) {
+            currLoc = new File(properties.offset.getAbsolutePath());
+            FileListItem parent = new FileListItem();
+            parent.setFilename(context.getString(R.string.label_parent_dir));
+            parent.setDirectory(true);
+            parent.setLocation(Objects.requireNonNull(currLoc.getParentFile())
+                    .getAbsolutePath());
+            parent.setTime(currLoc.lastModified());
+            internalList.add(parent);
+        } else if (properties.root.exists() && properties.root.isDirectory()) {
+            currLoc = new File(properties.root.getAbsolutePath());
+        } else {
+            currLoc = new File(properties.error_dir.getAbsolutePath());
+        }
+        dname.setText(currLoc.getName());
+        dir_path.setText(currLoc.getAbsolutePath());
+        setTitle();
+        internalList = Utility.prepareFileListEntries(internalList, currLoc, filter,
+                properties.show_hidden_files);
+        mFileListAdapter.notifyDataSetChanged();
+        listView.setOnItemClickListener(this);
     }
 
     private boolean validateOffsetPath() {
@@ -393,23 +444,48 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
 
     @Override
     public void show() {
-        if (!Utility.checkStorageAccessPermissions(context)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                ((Activity) context).requestPermissions(new String[]{Manifest.permission
-                        .READ_EXTERNAL_STORAGE}, EXTERNAL_READ_PERMISSION_GRANT);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (Utility.checkMediaAccessPermissions(context)) {
+                //Permission granted...
+                super.show();
+                positiveBtnNameStr = positiveBtnNameStr == null ?
+                        context.getResources().getString(R.string.choose_button_label) : positiveBtnNameStr;
+                select.setText(positiveBtnNameStr);
+                int size = MarkedItemList.getFileCount();
+                if (size == 0) {
+                    select.setText(positiveBtnNameStr);
+                } else {
+                    String button_label = positiveBtnNameStr + " (" + size + ") ";
+                    select.setText(button_label);
+                }
+            } else {
+                //Permissions are not granted...
+                Log.d(TAG, "Permissions are not granted");
             }
         } else {
-            super.show();
-            positiveBtnNameStr = positiveBtnNameStr == null ?
-                    context.getResources().getString(R.string.choose_button_label) : positiveBtnNameStr;
-            select.setText(positiveBtnNameStr);
-            int size = MarkedItemList.getFileCount();
-            if (size == 0) {
-                select.setText(positiveBtnNameStr);
+            if (!Utility.checkStorageAccessPermissions(context)) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    ((Activity) context).requestPermissions(new String[]{Manifest.permission
+                            .READ_EXTERNAL_STORAGE}, EXTERNAL_READ_PERMISSION_GRANT);
+                }
             } else {
-                String button_label = positiveBtnNameStr + " (" + size + ") ";
-                select.setText(button_label);
+                super.show();
+                positiveBtnNameStr = positiveBtnNameStr == null ?
+                        context.getResources().getString(R.string.choose_button_label) : positiveBtnNameStr;
+                select.setText(positiveBtnNameStr);
+                int size = MarkedItemList.getFileCount();
+                if (size == 0) {
+                    select.setText(positiveBtnNameStr);
+                } else {
+                    String button_label = positiveBtnNameStr + " (" + size + ") ";
+                    select.setText(button_label);
+                }
             }
+        }
+        if (!Utility.checkStorageAccessPermissions(context)) {
+
+        } else {
+
         }
     }
 
