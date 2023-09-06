@@ -4,7 +4,7 @@ group='com.github.TutorialsAndroid'
 
 ext {
     PUBLISH_GROUP_ID = 'io.github.tutorialsandroid'
-    PUBLISH_VERSION = '9.1.3'
+    PUBLISH_VERSION = '9.1.4'
     PUBLISH_ARTIFACT_ID = 'filepicker'
     PUBLISH_DESCRIPTION = 'Android Library to select files/directories from Device Storage'
     PUBLISH_URL = 'https://github.com/TutorialsAndroid/FilePicker'
@@ -45,10 +45,4 @@ android {
     lint {
         abortOnError false
     }
-}
-
-dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.11.0-alpha02'
 }
