@@ -46,6 +46,12 @@ Step 2. Add the dependency
 	        implementation 'com.github.TutorialsAndroid:FilePicker:v9.0.1'
 	}
 
+Step 2. Or instead of using jitpack you can use ```mavenCentral()```
+
+    dependencies {
+        implementation 'io.github.tutorialsandroid:filepicker:9.0.2'
+    }
+
 ### Usage
 
 **If you are targeting Android 10 or higher. Set this to your manifest**

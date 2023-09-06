@@ -4,7 +4,7 @@ group='com.github.TutorialsAndroid'
 
 ext {
     PUBLISH_GROUP_ID = 'io.github.tutorialsandroid'
-    PUBLISH_VERSION = '9.0.0'
+    PUBLISH_VERSION = '9.0.2'
     PUBLISH_ARTIFACT_ID = 'filepicker'
     PUBLISH_DESCRIPTION = 'Android Library to select files/directories from Device Storage'
     PUBLISH_URL = 'https://github.com/TutorialsAndroid/FilePicker'
@@ -21,6 +21,7 @@ ext {
     PUBLISH_SCM_URL =
             'https://github.com/tutorialsandroid/filepicker/tree/master'
 }
+apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
 
 android {
     compileSdk 34
@@ -46,19 +47,8 @@ android {
     }
 }
 
-publishing {
-    publications {
-        release(MavenPublication) {
-            groupId = PUBLISH_GROUP_ID
-            artifactId = PUBLISH_ARTIFACT_ID
-            version = PUBLISH_VERSION
-
-            from components.findByName('release')
-            artifact("$buildDir/outputs/aar/library-release.aar")
-        }
-    }
-
-    tasks.named('publishReleasePublicationToMavenLocal') {
-        dependsOn tasks.named('bundleReleaseAar')
-    }
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0-alpha02'
 }
