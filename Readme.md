@@ -1,6 +1,6 @@
 ![](https://github.com/TutorialsAndroid/FilePicker/blob/master/sample/src/main/res/mipmap-xxhdpi/ic_launcher.png)
 
-# FilePicker ![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat) [![License](https://img.shields.io/badge/License-Apache%202.0-orange.svg)](https://opensource.org/licenses/Apache-2.0) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-FilePicker-yellow.svg?style=flat)](https://android-arsenal.com/details/1/7663) [![](https://jitpack.io/v/TutorialsAndroid/FilePicker.svg)](https://jitpack.io/#TutorialsAndroid/FilePicker) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.tutorialsandroid/filepicker/badge.svg)]
+# FilePicker ![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat) [![License](https://img.shields.io/badge/License-Apache%202.0-orange.svg)](https://opensource.org/licenses/Apache-2.0) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-FilePicker-yellow.svg?style=flat)](https://android-arsenal.com/details/1/7663) [![](https://jitpack.io/v/TutorialsAndroid/FilePicker.svg)](https://jitpack.io/#TutorialsAndroid/FilePicker)
 Android Library to select files/directories from Device Storage
 
 ## And Don't Forget To Follow Me On Instagram
@@ -46,7 +46,7 @@ Step 2. Add the dependency
 	        implementation 'com.github.TutorialsAndroid:FilePicker:v9.0.1'
 	}
 
-Step 2. Or instead of using jitpack you can use ```mavenCentral()```
+Step 3. Or instead of using jitpack you can use ```mavenCentral()```
 
     dependencies {
         implementation 'io.github.tutorialsandroid:filepicker:9.0.2'
