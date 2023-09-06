@@ -25,7 +25,7 @@ Android Library to select files/directories from Device Storage
 * Files, Directory Selection.
 * Single or Multiple File selection.
 
-### Installation with JitPack
+### Installation with JitPack (WE HAVE STOPPED PUSHING LIBRARY TO JITPACK. SEE mavenCentral() below)
 
 Add it in your root build.gradle at the end of repositories:
 
@@ -45,7 +45,7 @@ Step 2. Add the dependency
 Step 1. Directly add the dependency in application build.gradle file:
 
     dependencies {
-        implementation 'io.github.tutorialsandroid:filepicker:9.0.2'
+        implementation 'io.github.tutorialsandroid:filepicker:9.1.4'
     }
 
 ### Usage
