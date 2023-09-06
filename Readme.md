@@ -3,6 +3,10 @@
 # FilePicker ![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat) [![License](https://img.shields.io/badge/License-Apache%202.0-orange.svg)](https://opensource.org/licenses/Apache-2.0) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-FilePicker-yellow.svg?style=flat)](https://android-arsenal.com/details/1/7663) [![](https://jitpack.io/v/TutorialsAndroid/FilePicker.svg)](https://jitpack.io/#TutorialsAndroid/FilePicker) [![](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://instagram.com/a.masram444) [![](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/a_masram444)
 Android Library to select files/directories from Device Storage
 
+## Will you buy a coffee for me
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.paypal.com/paypalme/tusharmasram)
+
 ## Contributors
 
 [M&R Games](https://github.com/mrgames13)
@@ -25,7 +29,8 @@ Android Library to select files/directories from Device Storage
 * Files, Directory Selection.
 * Single or Multiple File selection.
 
-### Installation with JitPack (WE HAVE STOPPED PUSHING LIBRARY TO JITPACK. SEE mavenCentral() below)
+### Installation with JitPack 
+*( IMPORTANT NOTE: WE HAVE STOPPED PUSHING LIBRARY TO JITPACK. SEE mavenCentral() below )*
 
 Add it in your root build.gradle at the end of repositories:
 
