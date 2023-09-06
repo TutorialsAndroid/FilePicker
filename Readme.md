@@ -1,11 +1,7 @@
 ![](https://github.com/TutorialsAndroid/FilePicker/blob/master/sample/src/main/res/mipmap-xxhdpi/ic_launcher.png)
 
-# FilePicker ![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat) [![License](https://img.shields.io/badge/License-Apache%202.0-orange.svg)](https://opensource.org/licenses/Apache-2.0) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-FilePicker-yellow.svg?style=flat)](https://android-arsenal.com/details/1/7663) [![](https://jitpack.io/v/TutorialsAndroid/FilePicker.svg)](https://jitpack.io/#TutorialsAndroid/FilePicker)
+# FilePicker ![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat) [![License](https://img.shields.io/badge/License-Apache%202.0-orange.svg)](https://opensource.org/licenses/Apache-2.0) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-FilePicker-yellow.svg?style=flat)](https://android-arsenal.com/details/1/7663) [![](https://jitpack.io/v/TutorialsAndroid/FilePicker.svg)](https://jitpack.io/#TutorialsAndroid/FilePicker) [![](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://instagram.com/a.masram444) [![](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/a_masram444)
 Android Library to select files/directories from Device Storage
-
-## And Don't Forget To Follow Me On Instagram
-
-<p align="center">Follow me on instagram to stay up-to-date https://instagram.com/a.masram444
 
 ## Contributors
 
@@ -17,7 +13,7 @@ Android Library to select files/directories from Device Storage
 
 [![](https://jitpack.io/v/TutorialsAndroid/FilePicker.svg)](https://jitpack.io/#TutorialsAndroid/FilePicker)
 
-`Latest version of this library is migrated to androidx`
+`Latest version of this library is migrated to androidx and Added partial Support to Android 13.`
 
 ### Screenshot
 
@@ -26,11 +22,10 @@ Android Library to select files/directories from Device Storage
 ### Features
 
 * Easy to Implement.
-* No permissions required.
 * Files, Directory Selection.
 * Single or Multiple File selection.
 
-### Installation
+### Installation with JitPack
 
 Add it in your root build.gradle at the end of repositories:
 
@@ -43,13 +38,14 @@ Add it in your root build.gradle at the end of repositories:
 Step 2. Add the dependency
 
 	dependencies {
-	        implementation 'com.github.TutorialsAndroid:FilePicker:v9.0.1'
+	        implementation 'com.github.TutorialsAndroid:FilePicker:v9.1.3'
 	}
 
-Step 3. Or instead of using jitpack you can use ```mavenCentral()```
+### Installation with mavenCentral()
+Step 1. Directly add the dependency in application build.gradle file:
 
     dependencies {
-        implementation 'io.github.tutorialsandroid:filepicker:9.0.2'
+        implementation 'io.github.tutorialsandroid:filepicker:9.1.3'
     }
 
 ### Usage
@@ -64,6 +60,25 @@ Step 3. Or instead of using jitpack you can use ```mavenCentral()```
     ......
   </application>
 </manifest>
+```
+**Also if you are targeting Android 10 or higher. You have to add permissions**
+
+```xml
+    <!-- If you are targeting apps above android version 6.0 to 12.0 You need to add this permission in your manifest -->    
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+    android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    android:maxSdkVersion="32" />
+    
+    <!-- Now if you are targeting app above android version 13.0 then you have to add this permission in your manifest.
+     It's upon you which type of files you want to access if you want access Audio, Images and Videos files then you have
+     to call all this below permissions -->
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
+
+    <!-- If you are targeting your app from android version 4.4 to the latest version of android then
+     you have to call all the above permissions as mentioned -->
 ```
 
 ## FilePickerDialog
@@ -90,7 +105,7 @@ Step 3. Or instead of using jitpack you can use ```mavenCentral()```
 3. Next create an instance of `FilePickerDialog`, and pass `Context` and `DialogProperties` references as parameters. Optional: You can change the title of dialog. Default is current directory name. Set the positive button string. Default is Select. Set the negative button string. Defalut is Cancel.
 
     ```java
-        FilePickerDialog dialog = new FilePickerDialog(MainActivity.this, MainActivity.this,properties);
+        FilePickerDialog dialog = new FilePickerDialog(MainActivity.this, properties);
         dialog.setTitle("Select a File");
     ```
 
@@ -141,7 +156,8 @@ As of Android 13 and above you can only browse and select Images,Videos and Audi
     Videos	          | READ_MEDIA_VIDEO
     Audio files	      | READ_MEDIA_AUDIO
 ```
-Before you access another app's media files, verify that the user has granted the appropriate granular media permissions to your app.
+
+*Before you access another app's media files, verify that the user has granted the appropriate granular media permissions to your app.*
 
 If you request both the ```READ_MEDIA_IMAGES``` permission and the ```READ_MEDIA_VIDEO``` permission at the same time, only one system permission dialog appears.
 

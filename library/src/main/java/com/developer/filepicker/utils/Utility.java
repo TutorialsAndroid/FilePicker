@@ -18,8 +18,6 @@ import java.util.Objects;
  */
 public class Utility {
 
-    private static final int REQUEST_MEDIA_PERMISSIONS = 456;
-
     public static boolean checkStorageAccessPermissions(Context context) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             String permission = "android.permission.READ_EXTERNAL_STORAGE";
@@ -32,17 +30,15 @@ public class Utility {
     }
 
     @android.annotation.TargetApi(Build.VERSION_CODES.TIRAMISU)
-    public static boolean checkMediaAccessPermissions(Context context) {//, Activity activity) {
+    public static boolean checkMediaAccessPermissions(Context context) {
         String audioPermission = Manifest.permission.READ_MEDIA_AUDIO;
         String imagesPermission = Manifest.permission.READ_MEDIA_IMAGES;
         String videoPermission = Manifest.permission.READ_MEDIA_VIDEO;
-        // Check for permissions and request them if needed
+        // Check for permissions and if permissions are granted then it will return true
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // You have the permissions, you can proceed with your media file operations.
-            // You don't have the permissions. Request them.
-            //                activity.requestPermissions(new String[]{audioPermission, imagesPermission, videoPermission}, REQUEST_MEDIA_PERMISSIONS);
-            return context.checkSelfPermission(audioPermission) == PackageManager.PERMISSION_GRANTED &&
-                    context.checkSelfPermission(imagesPermission) == PackageManager.PERMISSION_GRANTED &&
+            return context.checkSelfPermission(audioPermission) == PackageManager.PERMISSION_GRANTED ||
+                    context.checkSelfPermission(imagesPermission) == PackageManager.PERMISSION_GRANTED ||
                     context.checkSelfPermission(videoPermission) == PackageManager.PERMISSION_GRANTED;
         }
         return false;

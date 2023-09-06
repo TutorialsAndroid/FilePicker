@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import com.developer.filepicker.R;
 import com.developer.filepicker.controller.DialogSelectionListener;
-import com.developer.filepicker.controller.NotifyItemChecked;
 import com.developer.filepicker.controller.adapters.FileListAdapter;
 import com.developer.filepicker.model.DialogConfigs;
 import com.developer.filepicker.model.DialogProperties;
@@ -36,11 +35,8 @@ import java.util.Objects;
 /**
  * @author akshay sunil masram
  */
-@SuppressWarnings("unused")
 public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickListener {
-
     private static final String TAG = FilePickerDialog.class.getSimpleName();
-
     private final Context context;
     private Activity activity;
     private ListView listView;
@@ -57,7 +53,6 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
 
     public static final int EXTERNAL_READ_PERMISSION_GRANT = 112;
 
-    @Deprecated
     public FilePickerDialog(Context context) {
         super(context);
         this.context = context;
@@ -66,6 +61,7 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
         internalList = new ArrayList<>();
     }
 
+    @Deprecated
     public FilePickerDialog(Activity activity, Context context) {
         super(context);
         this.activity = activity;
@@ -75,7 +71,6 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
         internalList = new ArrayList<>();
     }
 
-    @Deprecated
     public FilePickerDialog(Context context, DialogProperties properties, int themeResId) {
         super(context, themeResId);
         this.context = context;
@@ -84,6 +79,7 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
         internalList = new ArrayList<>();
     }
 
+    @Deprecated
     public FilePickerDialog(Activity activity, Context context, DialogProperties properties, int themeResId) {
         super(context, themeResId);
         this.activity = activity;
@@ -93,7 +89,6 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
         internalList = new ArrayList<>();
     }
 
-    @Deprecated
     public FilePickerDialog(Context context, DialogProperties properties) {
         super(context);
         this.context = context;
@@ -102,6 +97,7 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
         internalList = new ArrayList<>();
     }
 
+    @Deprecated
     public FilePickerDialog(Activity activity, Context context, DialogProperties properties) {
         super(context);
         this.activity = activity;
@@ -138,60 +134,49 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
         if (negativeBtnNameStr != null) {
             cancel.setText(negativeBtnNameStr);
         }
-        select.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String[] paths = MarkedItemList.getSelectedPaths();
-                if (callbacks != null) {
-                    callbacks.onSelectedFilePaths(paths);
-                }
-                dismiss();
+        select.setOnClickListener(view -> {
+            String[] paths = MarkedItemList.getSelectedPaths();
+            if (callbacks != null) {
+                callbacks.onSelectedFilePaths(paths);
             }
+            dismiss();
         });
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                cancel();
-            }
-        });
+        cancel.setOnClickListener(view -> cancel());
         mFileListAdapter = new FileListAdapter(internalList, context, properties);
-        mFileListAdapter.setNotifyItemCheckedListener(new NotifyItemChecked() {
-            @Override
-            public void notifyCheckBoxIsClicked() {
-                positiveBtnNameStr = positiveBtnNameStr == null ?
-                        context.getResources().getString(R.string.choose_button_label) : positiveBtnNameStr;
-                int size = MarkedItemList.getFileCount();
-                if (size == 0) {
-                    select.setEnabled(false);
-                    int color;
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                        color = context.getResources().getColor(R.color.colorAccent,
-                                context.getTheme());
-                    } else {
-                        color = context.getResources().getColor(R.color.colorAccent);
-                    }
-                    select.setTextColor(Color.argb(128, Color.red(color), Color.green(color),
-                            Color.blue(color)));
-                    select.setText(positiveBtnNameStr);
+        mFileListAdapter.setNotifyItemCheckedListener(() -> {
+            positiveBtnNameStr = positiveBtnNameStr == null ?
+                    context.getResources().getString(R.string.choose_button_label) : positiveBtnNameStr;
+            int size1 = MarkedItemList.getFileCount();
+            if (size1 == 0) {
+                select.setEnabled(false);
+                int color;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    color = context.getResources().getColor(R.color.colorAccent,
+                            context.getTheme());
                 } else {
-                    select.setEnabled(true);
-                    int color;
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                        color = context.getResources().getColor(R.color.colorAccent,
-                                context.getTheme());
-                    } else {
-                        color = context.getResources().getColor(R.color.colorAccent);
-                    }
-                    select.setTextColor(color);
-                    String button_label = positiveBtnNameStr + " (" + size + ") ";
-                    select.setText(button_label);
+                    color = context.getResources().getColor(R.color.colorAccent);
                 }
-                if (properties.selection_mode == DialogConfigs.SINGLE_MODE) {
-                    /*  If a single file has to be selected, clear the previously checked
-                     *  checkbox from the list.
-                     */
-                    mFileListAdapter.notifyDataSetChanged();
+                select.setTextColor(Color.argb(128, Color.red(color), Color.green(color),
+                        Color.blue(color)));
+                select.setText(positiveBtnNameStr);
+            } else {
+                select.setEnabled(true);
+                int color;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    color = context.getResources().getColor(R.color.colorAccent,
+                            context.getTheme());
+                } else {
+                    color = context.getResources().getColor(R.color.colorAccent);
                 }
+                select.setTextColor(color);
+                String button_label = positiveBtnNameStr + " (" + size1 + ") ";
+                select.setText(button_label);
+            }
+            if (properties.selection_mode == DialogConfigs.SINGLE_MODE) {
+                /*  If a single file has to be selected, clear the previously checked
+                 *  checkbox from the list.
+                 */
+                mFileListAdapter.notifyDataSetChanged();
             }
         });
         listView.setAdapter(mFileListAdapter);
@@ -234,17 +219,18 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (Utility.checkMediaAccessPermissions(context)) {
                 //Permission granted...
+                Log.d(TAG, "Permission granted");
                 dir();
             } else {
                 //Permissions are not granted...
-                Log.d(TAG, "Permissions are not granted");
+                Log.d(TAG, "Permissions are not granted. You need to ask permission to user before accessing the storage and showing dialog.");
             }
         } else {
             if (Utility.checkStorageAccessPermissions(context)) {
                 Log.d(TAG, "Permission granted");
                 dir();
             } else {
-                Log.d(TAG, "Permission not granted");
+                Log.d(TAG, "Permission not granted. You need to ask permission to user before accessing the storage and showing dialog.");
             }
         }
     }
