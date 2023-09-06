@@ -38,14 +38,14 @@ Add it in your root build.gradle at the end of repositories:
 Step 2. Add the dependency
 
 	dependencies {
-	        implementation 'com.github.TutorialsAndroid:FilePicker:v9.1.3'
+	        implementation 'com.github.TutorialsAndroid:FilePicker:v9.0.1'
 	}
 
 ### Installation with mavenCentral()
 Step 1. Directly add the dependency in application build.gradle file:
 
     dependencies {
-        implementation 'io.github.tutorialsandroid:filepicker:9.1.3'
+        implementation 'io.github.tutorialsandroid:filepicker:9.0.2'
     }
 
 ### Usage
