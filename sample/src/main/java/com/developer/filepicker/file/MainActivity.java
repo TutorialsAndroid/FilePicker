@@ -1,6 +1,10 @@
 package com.developer.filepicker.file;
 
+import static android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION;
+
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,6 +17,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -24,6 +29,7 @@ import com.developer.filepicker.model.DialogProperties;
 import com.developer.filepicker.view.FilePickerDialog;
 import java.io.File;
 import java.util.ArrayList;
+
 //This is just sample activity for demo purposes always use the best practice to ask for
 //storage permissions on Android version 6.0 and above.
 public class MainActivity extends AppCompatActivity {
@@ -157,8 +163,6 @@ public class MainActivity extends AppCompatActivity {
 
         showDialog.setOnClickListener(view -> {
             //If Android version is 13 and greater then you can only access Audio, Images and Videos file
-            //We have made partial support of accessing storage in android 13 and above more updates will be soon out.
-            //Your contributions to this library are always welcome.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 //As the device is Android 13 and above so I want the permission of accessing Audio, Images, Videos
                 //You can ask permission according to your requirements what you want to access.
@@ -178,12 +182,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else {
                 //Android version is below 13 so we are asking normal read and write storage permissions
-                //Below android 13 you can access all types of files with this file picker
                 // Check for permissions and request them if needed
                 if (ContextCompat.checkSelfPermission(MainActivity.this, readPermission) == PackageManager.PERMISSION_GRANTED &&
                         ContextCompat.checkSelfPermission(MainActivity.this, writePermission) == PackageManager.PERMISSION_GRANTED) {
                     // You have the permissions, you can proceed with your file operations.
-                    //Showing dialog when Show Dialog button is clicked.
+                    // Show the file picker dialog when needed
                     filePickerDialog.show();
                 } else {
                     // You don't have the permissions. Request them.
@@ -224,7 +227,11 @@ public class MainActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permissions were granted. You can proceed with your file operations.
                 //Showing dialog when Show Dialog button is clicked.
-                filePickerDialog.show();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    accessAllFilesPermissionDialog();
+                } else {
+                    filePickerDialog.show();
+                }
             } else {
                 // Permissions were denied. Show a rationale dialog or inform the user about the importance of these permissions.
                 showRationaleDialog();
@@ -236,7 +243,9 @@ public class MainActivity extends AppCompatActivity {
             if (grantResults.length > 0 && areAllPermissionsGranted(grantResults)) {
                 // Permissions were granted. You can proceed with your media file operations.
                 //Showing dialog when Show Dialog button is clicked.
-                filePickerDialog.show();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    accessAllFilesPermissionDialog();
+                }
             } else {
                 // Permissions were denied. Show a rationale dialog or inform the user about the importance of these permissions.
                 showRationaleDialog();
@@ -287,5 +296,34 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private final static int APP_STORAGE_ACCESS_REQUEST_CODE = 501; // Any value
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    private void accessAllFilesPermissionDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Permission Needed")
+                .setMessage("This app needs all files access permissions to view files from your storage. Clicking on OK will redirect you to new window were you have to enable the option.")
+                .setPositiveButton("OK", (dialog, which) -> {
+                    // Request permissions when the user clicks OK.
+                    Intent intent = new Intent(ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:" + BuildConfig.APPLICATION_ID));
+                    startActivityForResult(intent, APP_STORAGE_ACCESS_REQUEST_CODE);
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> {
+                    dialog.dismiss();
+                    // Handle the case where the user cancels the permission request.
+                    filePickerDialog.show();
+                })
+                .show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == APP_STORAGE_ACCESS_REQUEST_CODE) {
+            // Permission granted. Now resume your workflow.
+            filePickerDialog.show();
+        }
     }
 }

@@ -50,8 +50,15 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
     private String titleStr = null;
     private String positiveBtnNameStr = null;
     private String negativeBtnNameStr = null;
-
     public static final int EXTERNAL_READ_PERMISSION_GRANT = 112;
+
+    private String getFileExtension(String filePath) {
+        int lastDotIndex = filePath.lastIndexOf('.');
+        if (lastDotIndex != -1) {
+            return filePath.substring(lastDotIndex + 1).toLowerCase();
+        }
+        return "";
+    }
 
     public FilePickerDialog(Context context) {
         super(context);
@@ -252,6 +259,7 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
         } else {
             currLoc = new File(properties.error_dir.getAbsolutePath());
         }
+
         dname.setText(currLoc.getName());
         dir_path.setText(currLoc.getAbsolutePath());
         setTitle();
@@ -290,6 +298,9 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
                     internalList = Utility.prepareFileListEntries(internalList, currLoc, filter,
                             properties.show_hidden_files);
                     mFileListAdapter.notifyDataSetChanged();
+
+                    // Count the total number of files in the folder
+                    countFilesInFolder(currLoc);
                 } else {
                     Toast.makeText(context, R.string.error_dir_access,
                             Toast.LENGTH_SHORT).show();
@@ -299,6 +310,21 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
                 fmark.performClick();
             }
         }
+    }
+
+    public int countFilesInFolder(File folder) {
+        int count = 0;
+        if (folder != null && folder.isDirectory()) {
+            File[] files = folder.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile()) {
+                        count++;
+                    }
+                }
+            }
+        }
+        return count;
     }
 
     public DialogProperties getProperties() {
@@ -467,11 +493,6 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
                     select.setText(button_label);
                 }
             }
-        }
-        if (!Utility.checkStorageAccessPermissions(context)) {
-
-        } else {
-
         }
     }
 

@@ -2,6 +2,7 @@ package com.developer.filepicker.controller.adapters;
 
 import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,8 @@ import java.util.Date;
  * @author akshay sunil masram
  */
 public class FileListAdapter extends BaseAdapter {
+
+    private static final String TAG = FileListAdapter.class.getSimpleName();
 
     private ArrayList<FileListItem> listItem;
     private Context context;

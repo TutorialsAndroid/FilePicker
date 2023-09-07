@@ -7,8 +7,8 @@ android {
         applicationId "com.developer.filepicker.file"
         minSdkVersion 19
         targetSdkVersion 34
-        versionCode 12
-        versionName "9.1.4"
+        versionCode 13
+        versionName "9.2.5"
     }
     buildTypes {
         release {
