@@ -30,7 +30,7 @@ Android Library to select files/directories from Device Storage
 * Single or Multiple File selection.
 
 ### Installation with JitPack 
-*( IMPORTANT NOTE: WE HAVE STOPPED PUSHING LIBRARY TO JITPACK. SEE mavenCentral() below )*
+*( IMPORTANT NOTE: WE HAVE STOPPED PUSHING LIBRARY TO JITPACK v9.0.1 is outdated now. SEE mavenCentral() below )*
 
 Add it in your root build.gradle at the end of repositories:
 
