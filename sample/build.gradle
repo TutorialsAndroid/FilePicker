@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
+    namespace 'com.developer.filepicker.file'
     compileSdk 34
 
     defaultConfig {
@@ -16,7 +17,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    namespace 'com.developer.filepicker.file'
 }
 
 dependencies {

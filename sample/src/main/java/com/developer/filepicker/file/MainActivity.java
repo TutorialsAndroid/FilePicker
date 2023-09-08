@@ -68,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Create a DialogProperties object.
         final DialogProperties properties = new DialogProperties();
+        //If you want to view files with specific extensions you can just call properties.extensions
+//        properties.extensions = new String[]{"zip","jpg","mp3","csv"};
 
         //Instantiate FilePickerDialog with Context and DialogProperties.
         filePickerDialog = new FilePickerDialog(MainActivity.this, properties);

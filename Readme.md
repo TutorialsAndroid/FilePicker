@@ -112,7 +112,10 @@ Step 1. Directly add the dependency in application build.gradle file:
         properties.root = new File(DialogConfigs.DEFAULT_DIR);
         properties.error_dir = new File(DialogConfigs.DEFAULT_DIR);
         properties.offset = new File(DialogConfigs.DEFAULT_DIR);
+        //If you want to view files of all extensions then pass null to properties.extensions
         properties.extensions = null;
+        //If you want to view files with specific type of extensions the pass string array to properties.extensions
+        properties.extensions = new String[]{"zip","jpg","mp3","csv"};
         properties.show_hidden_files = false;
     ```
 
