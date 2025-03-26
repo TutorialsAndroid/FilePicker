@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 
 android {
     namespace 'com.developer.filepicker.file'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.developer.filepicker.file"
         minSdkVersion 19
-        targetSdkVersion 34
+        targetSdkVersion 35
         versionCode 13
         versionName "9.2.5"
     }
