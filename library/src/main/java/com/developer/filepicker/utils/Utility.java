@@ -1,7 +1,6 @@
 package com.developer.filepicker.utils;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -9,9 +8,13 @@ import android.os.Build;
 import com.developer.filepicker.model.FileListItem;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Objects;
+import java.util.List;
 
 /**
  * @author akshay sunil masram
@@ -47,24 +50,44 @@ public class Utility {
     public static ArrayList<FileListItem>
     prepareFileListEntries(ArrayList<FileListItem> internalList, File inter,
                            ExtensionFilter filter, boolean show_hidden_files) {
-        try {
-            for (File name : Objects.requireNonNull(inter.listFiles(filter))) {
-                if (name.canRead()) {
-                    if(name.getName().startsWith(".") && !show_hidden_files) continue;
-                    FileListItem item = new FileListItem();
-                    item.setFilename(name.getName());
-                    item.setDirectory(name.isDirectory());
-                    item.setLocation(name.getAbsolutePath());
-                    item.setTime(name.lastModified());
-                    internalList.add(item);
-                }
+        List<File> fileList = getFiles(inter, filter);
+        for (File name : fileList) {
+            if (name.canRead()) {
+                if(name.getName().startsWith(".") && !show_hidden_files) continue;
+                FileListItem item = new FileListItem();
+                item.setFilename(name.getName());
+                item.setDirectory(name.isDirectory());
+                item.setLocation(name.getAbsolutePath());
+                item.setTime(name.lastModified());
+                internalList.add(item);
             }
-            Collections.sort(internalList);
         }
-        catch (NullPointerException e) {
-            e.printStackTrace();
-            internalList=new ArrayList<>();
-        }
+        Collections.sort(internalList);
+
         return internalList;
+    }
+
+    private static List<File> getFiles(File inter, ExtensionFilter filter) {
+        List<File> fileList = new ArrayList<>();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(
+                    inter.toPath(),
+                    entry -> filter.accept(entry.toFile())
+            )) {
+                for (Path entry : stream) {
+                    fileList.add(entry.toFile());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            File[] files = inter.listFiles(filter);
+            if (files != null) {
+                Collections.addAll(fileList, files);
+            }
+        }
+
+        return fileList;
     }
 }
