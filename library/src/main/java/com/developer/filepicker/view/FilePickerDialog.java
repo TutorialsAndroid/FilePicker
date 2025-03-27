@@ -132,6 +132,16 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
 				color = context.getResources().getColor(R.color.colorAccent);
 			}
 			select.setTextColor(Color.argb(128, Color.red(color), Color.green(color), Color.blue(color)));
+		}else if(properties.selection_type == DialogConfigs.CURRENT_DIR_SELECT)
+		{
+		select.setEnabled(true);
+			int color;
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+				color = context.getResources().getColor(R.color.colorAccent, context.getTheme());
+			} else {
+				color = context.getResources().getColor(R.color.colorAccent);
+			}
+			select.setTextColor(color);
 		}
 		dname = findViewById(R.id.dname);
 		title = findViewById(R.id.title);
