@@ -15,7 +15,7 @@ public class ExtensionFilter implements FileFilter {
     private DialogProperties properties;
 
     public ExtensionFilter(DialogProperties properties) {
-        if(properties.extensions!=null) {
+        if(properties.extensions != null) {
             this.validExtensions = properties.extensions;
         }
         else {
@@ -29,7 +29,7 @@ public class ExtensionFilter implements FileFilter {
         if (file.isDirectory()&&file.canRead())
         {   return true;
         }
-        else if(properties.selection_type== DialogConfigs.DIR_SELECT) {
+        else if(properties.selection_type == DialogConfigs.DIR_SELECT || properties.selection_type == DialogConfigs.CURRENT_DIR_SELECT) {
             return false;
         }
         else {
