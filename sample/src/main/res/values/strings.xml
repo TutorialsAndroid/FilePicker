@@ -17,6 +17,7 @@
     <string name="label_file">File</string>
     <string name="label_directory">Directory</string>
     <string name="label_files_and_directories">Files and Directories</string>
+    <string name="label_current_directory">Current Directory (Selection Mode is ignored</string>
     <string name="label_extensions">Filter Extensions(Seperate with Commas, Don\'t use dots)</string>
     <string name="show_hidden_files">Show hidden files</string>
 </resources>

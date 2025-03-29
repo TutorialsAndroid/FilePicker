@@ -2,6 +2,7 @@ package com.developer.filepicker.file;
 
 import static android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -24,9 +26,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.developer.filepicker.controller.DialogSelectionListener;
 import com.developer.filepicker.model.DialogConfigs;
 import com.developer.filepicker.model.DialogProperties;
 import com.developer.filepicker.view.FilePickerDialog;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -78,21 +82,23 @@ public class MainActivity extends AppCompatActivity {
         filePickerDialog.setNegativeBtnName("Cancel");
 
         modeRadio.check(R.id.singleRadio);
-        modeRadio.setOnCheckedChangeListener((group, checkedId) -> {
+        modeRadio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
+        @Override
+        public void onCheckedChanged(RadioGroup arg0, int checkedId) {
             if (checkedId == R.id.singleRadio) {
-                //Setting selection mode to single selection.
                 properties.selection_mode = DialogConfigs.SINGLE_MODE;
             }
 
             if (checkedId == R.id.multiRadio) {
-                //Setting selection mode to multiple selection.
                 properties.selection_mode = DialogConfigs.MULTI_MODE;
             }
-        });
+        }
+     });
 
         typeRadio.check(R.id.selFile);
-        typeRadio.setOnCheckedChangeListener((group, checkedId) -> {
-
+        typeRadio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
+        @Override
+        public void onCheckedChanged(RadioGroup arg0, int checkedId) {
             if (checkedId == R.id.selFile) {
                 //Setting selection type to files.
                 properties.selection_type = DialogConfigs.FILE_SELECT;
@@ -107,10 +113,21 @@ public class MainActivity extends AppCompatActivity {
                 //Setting selection type to files and directories.
                 properties.selection_type = DialogConfigs.FILE_AND_DIR_SELECT;
             }
-        });
-
-        apply.setOnClickListener(view -> {
-            String f_extension = extension.getText().toString();
+            if (checkedId == R.id.currentDir) {
+                //Setting selection type to files and directories.
+                properties.selection_type = DialogConfigs.CURRENT_DIR_SELECT;
+            }
+        }
+     });
+		final EditText pass1 = extension;
+		final EditText pass2 = root;
+		final EditText pass3 = offset;
+		final CheckBox pass4 = show_hidden_files;
+        apply.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view)
+            {
+				String f_extension = pass1.getText().toString();
             if (f_extension.length() > 0) {
                 //Add extensions to be sorted from the EditText input to the array of String.
                 int commas = countCommas(f_extension);
@@ -135,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
             } else {   //If EditText is empty, Initialise with null reference.
                 properties.extensions = null;
             }
-            String foffset = root.getText().toString();
+            String foffset = pass2.getText().toString();
             if (foffset.length() > 0 || !foffset.equals("")) {
                 //Setting Parent Directory.
                 properties.root = new File(foffset);
@@ -144,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
                 properties.root = new File(DialogConfigs.DEFAULT_DIR);
             }
 
-            String fset = offset.getText().toString();
+            String fset = pass3.getText().toString();
             if (fset.length() > 0 || !fset.equals("")) {
                 //Setting Offset Directory.
                 properties.offset = new File(fset);
@@ -153,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
                 properties.offset = new File(DialogConfigs.DEFAULT_DIR);
             }
 
-            properties.show_hidden_files = show_hidden_files.isChecked();
+            properties.show_hidden_files = pass4.isChecked();
 
             //Setting Alternative Directory, in case root is not accessible.This will be
             //used.
@@ -161,11 +178,17 @@ public class MainActivity extends AppCompatActivity {
             properties.error_dir = new File("/mnt");
             //Set new properties of dialog.
             filePickerDialog.setProperties(properties);
-        });
+            }
+            });
 
-        showDialog.setOnClickListener(view -> {
-            //If Android version is 13 and greater then you can only access Audio, Images and Videos file
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+       
+
+
+        showDialog.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view)
+            {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 //As the device is Android 13 and above so I want the permission of accessing Audio, Images, Videos
                 //You can ask permission according to your requirements what you want to access.
                 String audioPermission = android.Manifest.permission.READ_MEDIA_AUDIO;
@@ -195,11 +218,14 @@ public class MainActivity extends AppCompatActivity {
                     ActivityCompat.requestPermissions(MainActivity.this, new String[]{readPermission, writePermission}, REQUEST_STORAGE_PERMISSIONS);
                 }
             }
+            }
         });
 
         //Method handle selected files.
-        filePickerDialog.setDialogSelectionListener(files -> {
-            //files is the array of paths selected by the App User.
+        filePickerDialog.setDialogSelectionListener(new DialogSelectionListener() {
+			@Override
+			public final void onSelectedFilePaths(String[] files) {
+			//files is the array of paths selected by the App User.
             int size = listItem.size();
             listItem.clear();
             mFileListAdapter.notifyItemRangeRemoved(0, size);
@@ -211,7 +237,8 @@ public class MainActivity extends AppCompatActivity {
                 listItem.add(item);
             }
             mFileListAdapter.notifyItemRangeInserted(0, listItem.size());
-        });
+			}
+		});
     }
 
     private int countCommas(String f_extension) {
@@ -271,14 +298,18 @@ public class MainActivity extends AppCompatActivity {
             new AlertDialog.Builder(this)
                     .setTitle("Permission Needed")
                     .setMessage("This app needs storage permissions to read and write files.")
-                    .setPositiveButton("OK", (dialog, which) -> {
-                        // Request permissions when the user clicks OK.
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int optionCount) {
                         ActivityCompat.requestPermissions(MainActivity.this, new String[]{readPermission, writePermission}, REQUEST_STORAGE_PERMISSIONS);
-                    })
-                    .setNegativeButton("Cancel", (dialog, which) -> {
+                    }
+                })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int optionCount) {
                         dialog.dismiss();
-                        // Handle the case where the user cancels the permission request.
-                    })
+                    }
+                })
                     .show();
         } else {
             // Request permissions directly if no rationale is needed.
@@ -306,15 +337,19 @@ public class MainActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Permission Needed")
                 .setMessage("This app needs all files access permissions to view files from your storage. Clicking on OK will redirect you to new window were you have to enable the option.")
-                .setPositiveButton("OK", (dialog, which) -> {
-                    // Request permissions when the user clicks OK.
-                    Intent intent = new Intent(ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:" + BuildConfig.APPLICATION_ID));
-                    startActivityForResult(intent, APP_STORAGE_ACCESS_REQUEST_CODE);
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int optionCount) {
+                        Intent intent = new Intent(ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:" + getPackageName()));
+                        startActivityForResult(intent, APP_STORAGE_ACCESS_REQUEST_CODE);
+                    }
                 })
-                .setNegativeButton("Cancel", (dialog, which) -> {
-                    dialog.dismiss();
-                    // Handle the case where the user cancels the permission request.
-                    filePickerDialog.show();
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int optionCount) {
+                        dialog.dismiss();
+                        filePickerDialog.show();
+                    }
                 })
                 .show();
     }
