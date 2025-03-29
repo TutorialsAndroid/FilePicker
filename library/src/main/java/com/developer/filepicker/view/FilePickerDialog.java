@@ -117,7 +117,6 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.dialog_main);
 		listView = findViewById(R.id.fileList);
@@ -132,16 +131,6 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
 				color = context.getResources().getColor(R.color.colorAccent);
 			}
 			select.setTextColor(Color.argb(128, Color.red(color), Color.green(color), Color.blue(color)));
-		}else if(properties.selection_type == DialogConfigs.CURRENT_DIR_SELECT)
-		{
-		select.setEnabled(true);
-			int color;
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-				color = context.getResources().getColor(R.color.colorAccent, context.getTheme());
-			} else {
-				color = context.getResources().getColor(R.color.colorAccent);
-			}
-			select.setTextColor(color);
 		}
 		dname = findViewById(R.id.dname);
 		title = findViewById(R.id.title);
@@ -474,6 +463,29 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
 		}
 	}
 
+	public void handleSelectBTN() {
+		if (properties.selection_type == DialogConfigs.CURRENT_DIR_SELECT) {
+			select.setEnabled(true);
+			int color;
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+				color = context.getResources().getColor(R.color.colorAccent, context.getTheme());
+			} else {
+				color = context.getResources().getColor(R.color.colorAccent);
+			}
+			select.setTextColor(color);
+		} else {
+
+			select.setEnabled(false);
+			int color;
+			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+				color = context.getResources().getColor(R.color.colorAccent, context.getTheme());
+			} else {
+				color = context.getResources().getColor(R.color.colorAccent);
+			}
+			select.setTextColor(Color.argb(128, Color.red(color), Color.green(color), Color.blue(color)));
+		}
+	}
+	
 	@Override
 	public void show() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -516,6 +528,7 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
 				}
 			}
 		}
+		handleSelectBTN();
 	}
 
 	@Override
