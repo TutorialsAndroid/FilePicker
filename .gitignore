@@ -85,3 +85,5 @@ hs_err_pid*
 **/*.iml
 library/build
 sample/build
+create-central-bundle.ps1
+HowToPublish.txt
