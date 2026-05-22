@@ -7,9 +7,9 @@
 **A lightweight Android file and directory picker library for Java/Kotlin Android apps.**
 
 [![API](https://img.shields.io/badge/API-23%2B-brightgreen.svg?style=flat)](#requirements)
-[![Version](https://img.shields.io/badge/version-10.1.1-blue.svg)](#installation)
+![Maven Central](https://img.shields.io/maven-central/v/io.github.tutorialsandroid/filepicker)
+[![](https://jitpack.io/v/TutorialsAndroid/FilePicker.svg)](https://jitpack.io/#TutorialsAndroid/FilePicker)
 [![License](https://img.shields.io/badge/License-Apache%202.0-orange.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Maven Central](https://img.shields.io/badge/Maven%20Central-FilePicker-blue)](#installation)
 [![AndroidX](https://img.shields.io/badge/AndroidX-supported-brightgreen)](#requirements)
 
 Select files, folders, or both from device storage with single-selection and multi-selection support.
@@ -172,9 +172,63 @@ Official references:
 
 ## Installation
 
-### Maven Central
+FilePicker v10.1.1 is available through **Maven Central** and **JitPack**.
 
-Add Maven Central to your project repositories if it is not already available:
+Recommended installation method: **Maven Central**  
+Alternative installation method: **JitPack**
+
+> Minimum supported SDK: **API 23 / Android 6.0+**
+
+---
+
+## Option 1: Installation using Maven Central
+
+Maven Central is the recommended way to use this library.
+
+### Step 1: Add Maven Central repository
+
+Open your project-level `settings.gradle` file.
+
+Usually this file is located here:
+
+```text
+YourProject/settings.gradle
+````
+
+or, if you are using Kotlin DSL:
+
+```text
+YourProject/settings.gradle.kts
+```
+
+Add `mavenCentral()` inside `dependencyResolutionManagement`.
+
+### Groovy DSL - settings.gradle
+
+```gradle
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "YourProjectName"
+include ':app'
+```
+
+If your project already has `dependencyResolutionManagement`, do not duplicate the full block. Just make sure `mavenCentral()` is added inside `repositories`.
+
+Example:
 
 ```gradle
 dependencyResolutionManagement {
@@ -186,7 +240,50 @@ dependencyResolutionManagement {
 }
 ```
 
-Add the dependency in your app module:
+### Kotlin DSL - settings.gradle.kts
+
+```kotlin
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "YourProjectName"
+include(":app")
+```
+
+---
+
+### Step 2: Add FilePicker dependency
+
+Open your app-level Gradle file.
+
+Usually this file is located here:
+
+```text
+YourProject/app/build.gradle
+```
+
+or, if you are using Kotlin DSL:
+
+```text
+YourProject/app/build.gradle.kts
+```
+
+Add the FilePicker dependency inside the `dependencies` block.
+
+### Groovy DSL - app/build.gradle
 
 ```gradle
 dependencies {
@@ -194,7 +291,187 @@ dependencies {
 }
 ```
 
-Your app/library module should use `minSdk 23` or higher:
+### Kotlin DSL - app/build.gradle.kts
+
+```kotlin
+dependencies {
+    implementation("io.github.tutorialsandroid:filepicker:10.1.1")
+}
+```
+
+---
+
+### Step 3: Set minimum SDK to 23 or higher
+
+FilePicker v10.1.1 requires `minSdk 23` or higher.
+
+Open your app-level Gradle file:
+
+```text
+YourProject/app/build.gradle
+```
+
+Inside the `android` block, add or update `minSdk`.
+
+### Groovy DSL - app/build.gradle
+
+```gradle
+android {
+    namespace "com.example.yourapp"
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "com.example.yourapp"
+        minSdk 23
+        targetSdk 35
+        versionCode 1
+        versionName "1.0"
+    }
+}
+```
+
+### Kotlin DSL - app/build.gradle.kts
+
+```kotlin
+android {
+    namespace = "com.example.yourapp"
+    compileSdk = 35
+
+    defaultConfig {
+        applicationId = "com.example.yourapp"
+        minSdk = 23
+        targetSdk = 35
+        versionCode = 1
+        versionName = "1.0"
+    }
+}
+```
+
+If your project already has `minSdk 23` or higher, no change is required.
+
+---
+
+### Step 4: Sync the project
+
+After adding the dependency, click:
+
+```text
+Sync Now
+```
+
+in Android Studio.
+
+You can also sync manually from:
+
+```text
+File > Sync Project with Gradle Files
+```
+
+---
+
+## Option 2: Installation using JitPack
+
+JitPack support is also available for developers who prefer GitHub-based dependency installation.
+
+> Maven Central is still recommended for production apps.
+
+---
+
+### Step 1: Add JitPack repository
+
+Open your project-level `settings.gradle` file.
+
+Usually this file is located here:
+
+```text
+YourProject/settings.gradle
+```
+
+Add `maven { url 'https://jitpack.io' }` inside `dependencyResolutionManagement`.
+
+### Groovy DSL - settings.gradle
+
+```gradle
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+rootProject.name = "YourProjectName"
+include ':app'
+```
+
+### Kotlin DSL - settings.gradle.kts
+
+```kotlin
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven("https://jitpack.io")
+    }
+}
+
+rootProject.name = "YourProjectName"
+include(":app")
+```
+
+---
+
+### Step 2: Add JitPack dependency
+
+Open your app-level Gradle file:
+
+```text
+YourProject/app/build.gradle
+```
+
+Add the dependency inside the `dependencies` block.
+
+### Groovy DSL - app/build.gradle
+
+```gradle
+dependencies {
+    implementation "com.github.TutorialsAndroid:FilePicker:v10.1.1"
+}
+```
+
+### Kotlin DSL - app/build.gradle.kts
+
+```kotlin
+dependencies {
+    implementation("com.github.TutorialsAndroid:FilePicker:v10.1.1")
+}
+```
+
+---
+
+### Step 3: Set minimum SDK
+
+FilePicker v10.1.1 requires `minSdk 23` or higher.
+
+### Groovy DSL
 
 ```gradle
 android {
@@ -204,14 +481,100 @@ android {
 }
 ```
 
-### Legacy JitPack note
+### Kotlin DSL
 
-Older versions were available from JitPack, but for v10+ Maven Central is recommended.
+```kotlin
+android {
+    defaultConfig {
+        minSdk = 23
+    }
+}
+```
+
+---
+
+## Important Notes
+
+### Maven Central vs JitPack
+
+For production apps, Maven Central is recommended:
 
 ```gradle
-// Old legacy style only. Not recommended for v10+.
-implementation "com.github.TutorialsAndroid:FilePicker:v9.0.1"
+implementation "io.github.tutorialsandroid:filepicker:10.1.1"
 ```
+
+Use JitPack only if you specifically want to fetch the library directly from GitHub:
+
+```gradle
+implementation "com.github.TutorialsAndroid:FilePicker:v10.1.1"
+```
+
+---
+
+### Do not add repositories inside app/build.gradle in modern Android projects
+
+Older Android projects used this style:
+
+```gradle
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+
+For modern Android Gradle Plugin versions, repositories should usually be added in:
+
+```text
+settings.gradle
+```
+
+inside:
+
+```gradle
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+```
+
+Only use the old `allprojects` method if your project is very old and does not have `dependencyResolutionManagement`.
+
+---
+
+## Installation
+
+### Maven Central
+
+```gradle
+dependencies {
+    implementation "io.github.tutorialsandroid:filepicker:10.1.1"
+}
+```
+
+### JitPack
+
+```gradle
+dependencies {
+    implementation "com.github.TutorialsAndroid:FilePicker:v10.1.1"
+}
+```
+
+### Minimum SDK
+
+```gradle
+android {
+    defaultConfig {
+        minSdk 23
+    }
+}
+```
+
+Small Note: use **one dependency only** in your project. Do not add both Maven Central and JitPack dependency at the same time, otherwise Gradle may pull duplicate versions.
 
 ---
 
