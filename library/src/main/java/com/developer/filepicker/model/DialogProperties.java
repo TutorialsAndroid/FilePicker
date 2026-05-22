@@ -29,6 +29,20 @@ public class DialogProperties {
      */
     public boolean show_permission_error_toast;
 
+    /**
+     * Maximum allowed file size in bytes.
+     *
+     * Default value -1 means no maximum size filter.
+     */
+    public long max_file_size = -1L;
+
+    /**
+     * Minimum allowed file size in bytes.
+     *
+     * Default value -1 means no minimum size filter.
+     */
+    public long min_file_size = -1L;
+
     public DialogProperties() {
         selection_mode = DialogConfigs.SINGLE_MODE;
         selection_type = DialogConfigs.FILE_SELECT;
@@ -37,7 +51,9 @@ public class DialogProperties {
         offset = new File(DialogConfigs.DEFAULT_DIR);
         extensions = null;
         show_hidden_files = false;
-        allow_manage_external_storage = true;
-        show_permission_error_toast = true;
+
+        // v10.1.2 file size filters
+        max_file_size = -1L;
+        min_file_size = -1L;
     }
 }

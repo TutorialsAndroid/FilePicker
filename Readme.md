@@ -1333,6 +1333,271 @@ properties.extensions = new String[]{"*"};
 - Directories remain visible if readable, because users need to navigate through folders.
 - If `selection_type` is `DIR_SELECT`, files are not selectable.
 
+--- 
+
+## File size filtering
+
+FilePicker supports file size filtering using `min_file_size` and `max_file_size`.
+
+This feature is not limited to video files. It works with **any file type** because the picker checks the actual file size in bytes.
+
+You can use file size filtering for:
+
+- Videos such as `mp4`, `mkv`, `avi`, `mov`
+- Documents such as `pdf`, `doc`, `docx`, `xls`, `xlsx`
+- Images such as `jpg`, `jpeg`, `png`, `webp`
+- Audio files such as `mp3`, `wav`, `aac`
+- Archives such as `zip`, `rar`, `7z`
+- Any other readable file type
+
+File size filtering can be used in three ways:
+
+1. Allow files below a specific size.
+2. Allow files above a specific size.
+3. Allow files between a minimum and maximum size.
+
+---
+
+### File size values are in bytes
+
+`min_file_size` and `max_file_size` accept values in **bytes**.
+
+```java
+properties.min_file_size = 5L * 1024L * 1024L;   // 5 MB
+properties.max_file_size = 50L * 1024L * 1024L;  // 50 MB
+```
+
+The `L` is important because file sizes can become large. It tells Java to calculate the value as a `long`.
+
+---
+
+### Disable file size filtering
+
+By default, file size filtering is disabled.
+
+```java
+properties.min_file_size = -1L;
+properties.max_file_size = -1L;
+```
+
+`-1L` means there is no limit.
+
+---
+
+### Select any file below 50 MB
+
+This example allows the user to select any readable file below 50 MB.
+
+```java
+DialogProperties properties = new DialogProperties();
+
+properties.selection_mode = DialogConfigs.SINGLE_MODE;
+properties.selection_type = DialogConfigs.FILE_SELECT;
+
+// null means all file extensions are allowed
+properties.extensions = null;
+
+// Allow files up to 50 MB
+properties.max_file_size = 50L * 1024L * 1024L;
+
+// No minimum size limit
+properties.min_file_size = -1L;
+
+FilePickerDialog dialog = new FilePickerDialog(MainActivity.this, properties);
+dialog.setTitle("Select File Below 50 MB");
+dialog.show();
+```
+
+---
+
+### Select video files below 100 MB
+
+This example allows only video files below 100 MB.
+
+```java
+DialogProperties properties = new DialogProperties();
+
+properties.selection_mode = DialogConfigs.SINGLE_MODE;
+properties.selection_type = DialogConfigs.FILE_SELECT;
+
+// Only video files
+properties.extensions = new String[]{
+        "mp4",
+        "mkv",
+        "avi",
+        "mov",
+        "webm",
+        "3gp"
+};
+
+// Allow videos up to 100 MB
+properties.max_file_size = 100L * 1024L * 1024L;
+
+// No minimum size limit
+properties.min_file_size = -1L;
+
+FilePickerDialog dialog = new FilePickerDialog(MainActivity.this, properties);
+dialog.setTitle("Select Video Below 100 MB");
+dialog.show();
+```
+
+---
+
+### Select PDF files below 10 MB
+
+```java
+DialogProperties properties = new DialogProperties();
+
+properties.selection_mode = DialogConfigs.SINGLE_MODE;
+properties.selection_type = DialogConfigs.FILE_SELECT;
+
+// Only PDF files
+properties.extensions = new String[]{"pdf"};
+
+// Allow PDF files up to 10 MB
+properties.max_file_size = 10L * 1024L * 1024L;
+
+FilePickerDialog dialog = new FilePickerDialog(MainActivity.this, properties);
+dialog.setTitle("Select PDF Below 10 MB");
+dialog.show();
+```
+
+---
+
+### Select files larger than 20 MB
+
+You can also allow only files larger than a specific size by using `min_file_size`.
+
+```java
+DialogProperties properties = new DialogProperties();
+
+properties.selection_mode = DialogConfigs.SINGLE_MODE;
+properties.selection_type = DialogConfigs.FILE_SELECT;
+
+// Allow all file types
+properties.extensions = null;
+
+// Only show files larger than 20 MB
+properties.min_file_size = 20L * 1024L * 1024L;
+
+// No maximum size limit
+properties.max_file_size = -1L;
+
+FilePickerDialog dialog = new FilePickerDialog(MainActivity.this, properties);
+dialog.setTitle("Select File Larger Than 20 MB");
+dialog.show();
+```
+
+---
+
+### Select files between 5 MB and 200 MB
+
+This example allows any file type between 5 MB and 200 MB.
+
+```java
+DialogProperties properties = new DialogProperties();
+
+properties.selection_mode = DialogConfigs.SINGLE_MODE;
+properties.selection_type = DialogConfigs.FILE_SELECT;
+
+// Allow all file types
+properties.extensions = null;
+
+// Minimum size: 5 MB
+properties.min_file_size = 5L * 1024L * 1024L;
+
+// Maximum size: 200 MB
+properties.max_file_size = 200L * 1024L * 1024L;
+
+FilePickerDialog dialog = new FilePickerDialog(MainActivity.this, properties);
+dialog.setTitle("Select File Between 5 MB and 200 MB");
+dialog.show();
+```
+
+---
+
+### Select large video files between 100 MB and 2 GB
+
+FilePicker also supports large file size limits because `min_file_size` and `max_file_size` use `long`.
+
+```java
+DialogProperties properties = new DialogProperties();
+
+properties.selection_mode = DialogConfigs.SINGLE_MODE;
+properties.selection_type = DialogConfigs.FILE_SELECT;
+
+// Only video files
+properties.extensions = new String[]{
+        "mp4",
+        "mkv",
+        "avi",
+        "mov",
+        "webm"
+};
+
+// Minimum size: 100 MB
+properties.min_file_size = 100L * 1024L * 1024L;
+
+// Maximum size: 2 GB
+properties.max_file_size = 2L * 1024L * 1024L * 1024L;
+
+FilePickerDialog dialog = new FilePickerDialog(MainActivity.this, properties);
+dialog.setTitle("Select Large Video File");
+dialog.show();
+```
+
+---
+
+### Helper method for converting MB to bytes
+
+For cleaner code, you can create a helper method:
+
+```java
+private long mbToBytes(long mb) {
+    return mb * 1024L * 1024L;
+}
+```
+
+Usage:
+
+```java
+properties.max_file_size = mbToBytes(50);   // 50 MB
+properties.min_file_size = mbToBytes(5);    // 5 MB
+```
+
+---
+
+### Helper method for converting GB to bytes
+
+```java
+private long gbToBytes(long gb) {
+    return gb * 1024L * 1024L * 1024L;
+}
+```
+
+Usage:
+
+```java
+properties.max_file_size = gbToBytes(2);    // 2 GB
+```
+
+---
+
+### Important notes
+
+- File size values must be provided in bytes.
+- Use `L` in size calculations to avoid integer overflow.
+- `-1L` means no limit.
+- `min_file_size` checks the minimum allowed file size.
+- `max_file_size` checks the maximum allowed file size.
+- File size filtering works with all file types, not only videos.
+- Extension filtering and file size filtering can be combined.
+- Directories are not blocked by file size filters because users still need to browse folders.
+- File size filtering only applies to files.
+- If both `min_file_size` and `max_file_size` are set, the file must be inside that size range.
+- If `min_file_size` is greater than `max_file_size`, no file may match your filter, so validate your values before showing the dialog.
+- On Android 11 and above, storage access rules still apply. File size filtering does not bypass Android scoped storage or Play Store permission policies.
+
 ---
 
 ## Single and multiple selection

@@ -13,7 +13,6 @@ import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -59,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
         EditText extension = findViewById(R.id.extensions);
         EditText root = findViewById(R.id.root);
         EditText offset = findViewById(R.id.offset);
+        EditText minFileSizeMb = findViewById(R.id.min_file_size_mb);
+        EditText maxFileSizeMb = findViewById(R.id.max_file_size_mb);
         CheckBox showHiddenFiles = findViewById(R.id.show_hidden_files);
         Button apply = findViewById(R.id.apply);
         Button showDialog = findViewById(R.id.show_dialog);
@@ -116,6 +117,23 @@ public class MainActivity extends AppCompatActivity {
                     : new File(offsetPath);
 
             properties.show_hidden_files = showHiddenFiles.isChecked();
+
+            Long minBytes = parseSizeMb(minFileSizeMb.getText().toString().trim());
+            Long maxBytes = parseSizeMb(maxFileSizeMb.getText().toString().trim());
+
+            if (minBytes == null || maxBytes == null) {
+                Toast.makeText(this, "Enter valid file size values in MB", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (minBytes >= 0 && maxBytes >= 0 && minBytes > maxBytes) {
+                Toast.makeText(this, "Minimum file size cannot be greater than maximum file size", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            properties.min_file_size = minBytes;
+            properties.max_file_size = maxBytes;
+
             properties.error_dir = new File(DialogConfigs.DEFAULT_DIR);
             filePickerDialog.setProperties(properties);
 
@@ -143,6 +161,22 @@ public class MainActivity extends AppCompatActivity {
                 mFileListAdapter.notifyItemRangeInserted(0, listItem.size());
             }
         });
+    }
+
+    private Long parseSizeMb(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return -1L;
+        }
+
+        try {
+            double mb = Double.parseDouble(value.trim());
+            if (mb < 0) {
+                return null;
+            }
+            return (long) (mb * 1024L * 1024L);
+        } catch (NumberFormatException exception) {
+            return null;
+        }
     }
 
     private void setupPermissionLaunchers() {

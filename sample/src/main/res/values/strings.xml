@@ -19,4 +19,8 @@
     <string name="label_files_and_directories">Files and Directories</string>
     <string name="label_extensions">Filter Extensions(Seperate with Commas, Don\'t use dots)</string>
     <string name="show_hidden_files">Show hidden files</string>
+    <string name="label_file_size_filter">File size filter (MB)</string>
+    <string name="hint_min_file_size_mb">Min size MB optional</string>
+    <string name="hint_max_file_size_mb">Max size MB optional</string>
+
 </resources>

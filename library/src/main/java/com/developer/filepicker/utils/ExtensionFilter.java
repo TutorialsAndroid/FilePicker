@@ -38,6 +38,10 @@ public class ExtensionFilter implements FileFilter {
             return false;
         }
 
+        if (!isFileSizeAllowed(file)) {
+            return false;
+        }
+
         if (validExtensions.length == 0) {
             return true;
         }
@@ -48,7 +52,22 @@ public class ExtensionFilter implements FileFilter {
                 return true;
             }
         }
+
         return false;
+    }
+
+    private boolean isFileSizeAllowed(File file) {
+        long fileSize = file.length();
+
+        if (properties.min_file_size >= 0 && fileSize < properties.min_file_size) {
+            return false;
+        }
+
+        if (properties.max_file_size >= 0 && fileSize > properties.max_file_size) {
+            return false;
+        }
+
+        return true;
     }
 
     private static String[] normalizeExtensions(String[] extensions) {

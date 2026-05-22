@@ -4,7 +4,7 @@ group='com.github.TutorialsAndroid'
 
 ext {
     PUBLISH_GROUP_ID = 'io.github.tutorialsandroid'
-    PUBLISH_VERSION = '10.1.1'
+    PUBLISH_VERSION = '10.1.2'
     PUBLISH_ARTIFACT_ID = 'filepicker'
     PUBLISH_DESCRIPTION = 'Android Library to select files/directories from Device Storage'
     PUBLISH_URL = 'https://github.com/TutorialsAndroid/FilePicker'
