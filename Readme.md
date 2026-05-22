@@ -34,6 +34,18 @@ Thanks to all contributors who helped improve this library.
 
 ---
 
+## ❤️ Support the Project
+
+If this library helps you, please consider supporting my open-source work.
+
+<p align="start">
+  <a href="https://github.com/sponsors/TutorialsAndroid">
+    <img src="https://img.shields.io/badge/Sponsor%20on-GitHub-EA4AAA?style=for-the-badge&logo=githubsponsors&logoColor=white" alt="Sponsor on GitHub" />
+  </a>
+</p>
+
+---
+
 ## Table of Contents
 
 - [Overview](#overview)
