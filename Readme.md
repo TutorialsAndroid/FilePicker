@@ -49,7 +49,7 @@ If this library helps you, please consider supporting my open-source work.
 ## Table of Contents
 
 - [Overview](#overview)
-- [What is new in v10.1.1](#what-is-new-in-v1011)
+- [What is new in v10.1.2](#what-is-new-in-v1012)
 - [Important Android storage reality](#important-android-storage-reality)
 - [Requirements](#requirements)
 - [Installation](#installation)
@@ -71,7 +71,7 @@ If this library helps you, please consider supporting my open-source work.
 - [Handling Android 14+ partial photo/video access](#handling-android-14-partial-photovideo-access)
 - [Play Store safe integration options](#play-store-safe-integration-options)
 - [Troubleshooting](#troubleshooting)
-- [Migration guide from v9.x to v10.1.1](#migration-guide-from-v9x-to-v1011)
+- [Migration guide from v9.x to v10.1.2](#migration-guide-from-v9x-to-v1012)
 - [Security and privacy recommendations](#security-and-privacy-recommendations)
 - [FAQ](#faq)
 - [Contributing](#contributing)
@@ -105,9 +105,21 @@ dialog.setDialogSelectionListener(files -> {
 
 ---
 
-## What is new in v10.1.1
+## What is new in v10.1.2
 
-Version `10.1.1` focuses on modern Android support, stability, clearer storage behavior, and better dialog customization.
+Version `10.1.2` focuses on modern Android support, stability, clearer storage behavior, dialog customization, and advanced file filtering.
+
+### New in v10.1.2
+
+- Added file size filtering support using `min_file_size` and `max_file_size`.
+- Added support for selecting files below a specific size.
+- Added support for selecting files above a specific size.
+- Added support for selecting files between a minimum and maximum size range.
+- Added support for combining file size filtering with extension filtering.
+- Added examples for selecting video files below a specific file size.
+- Added examples for selecting PDF files below a specific file size.
+- Added examples for selecting large files such as videos between 100 MB and 2 GB.
+- Added README documentation explaining that file size filtering works with all file types, not only videos.
 
 ### New in v10.1.1
 
@@ -124,6 +136,7 @@ Version `10.1.1` focuses on modern Android support, stability, clearer storage b
 - Improved Android 13+ permission guidance.
 - Added Android 14+ partial media access documentation.
 - Safer extension filtering.
+- Safer file size filtering.
 - Safer checkbox handling.
 - Safer selected item handling.
 - More predictable selected path ordering.
@@ -139,6 +152,7 @@ Version `10.1.1` focuses on modern Android support, stability, clearer storage b
 - Handles invalid offset/root configuration safely.
 - Handles empty folders safely.
 - Handles extension formats like `pdf`, `.pdf`, and `*`.
+- Handles file size limits using `long` values to support large file sizes.
 
 ---
 
@@ -299,7 +313,7 @@ Add the FilePicker dependency inside the `dependencies` block.
 
 ```gradle
 dependencies {
-    implementation "io.github.tutorialsandroid:filepicker:10.1.1"
+    implementation "io.github.tutorialsandroid:filepicker:10.1.2"
 }
 ```
 
@@ -307,7 +321,7 @@ dependencies {
 
 ```kotlin
 dependencies {
-    implementation("io.github.tutorialsandroid:filepicker:10.1.1")
+    implementation("io.github.tutorialsandroid:filepicker:10.1.2")
 }
 ```
 
@@ -465,7 +479,7 @@ Add the dependency inside the `dependencies` block.
 
 ```gradle
 dependencies {
-    implementation "com.github.TutorialsAndroid:FilePicker:v10.1.1"
+    implementation "com.github.TutorialsAndroid:FilePicker:v10.1.2"
 }
 ```
 
@@ -473,7 +487,7 @@ dependencies {
 
 ```kotlin
 dependencies {
-    implementation("com.github.TutorialsAndroid:FilePicker:v10.1.1")
+    implementation("com.github.TutorialsAndroid:FilePicker:v10.1.2")
 }
 ```
 
@@ -512,13 +526,13 @@ android {
 For production apps, Maven Central is recommended:
 
 ```gradle
-implementation "io.github.tutorialsandroid:filepicker:10.1.1"
+implementation "io.github.tutorialsandroid:filepicker:10.1.2"
 ```
 
 Use JitPack only if you specifically want to fetch the library directly from GitHub:
 
 ```gradle
-implementation "com.github.TutorialsAndroid:FilePicker:v10.1.1"
+implementation "com.github.TutorialsAndroid:FilePicker:v10.1.2"
 ```
 
 ---
@@ -564,7 +578,7 @@ Only use the old `allprojects` method if your project is very old and does not h
 
 ```gradle
 dependencies {
-    implementation "io.github.tutorialsandroid:filepicker:10.1.1"
+    implementation "io.github.tutorialsandroid:filepicker:10.1.2"
 }
 ```
 
@@ -572,7 +586,7 @@ dependencies {
 
 ```gradle
 dependencies {
-    implementation "com.github.TutorialsAndroid:FilePicker:v10.1.1"
+    implementation "com.github.TutorialsAndroid:FilePicker:v10.1.2"
 }
 ```
 
@@ -914,7 +928,7 @@ FilePickerDialog dialog = new FilePickerDialog(
 
 This section answers a common GitHub issue/question: **"Change Width and Height"**.
 
-From `v10.1.1`, `FilePickerDialog` supports programmatic dialog sizing. This is useful for:
+`FilePickerDialog` supports programmatic dialog sizing. This is useful for:
 
 - Ultra-wide screens
 - Landscape mode
@@ -1812,7 +1826,7 @@ If your APK is used internally, enterprise-side-loaded, or outside Google Play, 
 
 ### Dialog looks too small on tablets, landscape, or ultra-wide screens
 
-Use the v10.1.1 dialog sizing API before showing the picker:
+Use the dialog sizing API before showing the picker:
 
 ```java
 dialog.setDialogSizeByPercent(0.85f, 0.75f);
@@ -1894,12 +1908,12 @@ Possible causes:
 
 ---
 
-## Migration guide from v9.x to v10.1.1
+## Migration guide from v9.x to v10.1.2
 
 ### 1. Update dependency
 
 ```gradle
-implementation "io.github.tutorialsandroid:filepicker:10.1.1"
+implementation "io.github.tutorialsandroid:filepicker:10.1.2"
 ```
 
 ### 2. Replace old permission code
@@ -1951,7 +1965,7 @@ Only use `MANAGE_EXTERNAL_STORAGE` when the answer is policy-safe.
 
 ### 5. Update dialog size usage if needed
 
-If your old app looked too narrow on landscape, tablet, foldable, or ultra-wide screens, use the v10.1.1 sizing API:
+If your old app looked too narrow on landscape, tablet, foldable, or ultra-wide screens, use the v10.1.2 sizing API:
 
 ```java
 dialog.setDialogSizeByPercent(0.85f, 0.75f);
@@ -2043,7 +2057,7 @@ No.
 
 ### Can I change dialog width and height?
 
-Yes. From v10.1.1, use:
+Yes. From v10.1.2, use:
 
 ```java
 dialog.setDialogSizeByPercent(0.85f, 0.75f);
