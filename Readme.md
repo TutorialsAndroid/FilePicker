@@ -18,6 +18,22 @@ Select files, folders, or both from device storage with single-selection and mul
 
 ---
 
+Community links:
+
+- Instagram: https://instagram.com/coderx09
+- Telegram: https://t.me/a_masram444
+
+---
+
+## Contributors
+
+Thanks to all contributors who helped improve this library.
+
+- [M&R Games](https://github.com/mrgames13)
+- [Hatzen](https://github.com/Hatzen)
+
+---
+
 ## Table of Contents
 
 - [Overview](#overview)
@@ -1431,28 +1447,6 @@ Before opening a pull request:
 3. Do not add unnecessary permissions.
 4. Update README when behavior changes.
 5. Explain Play Store impact if storage permissions change.
-
----
-
-## Support
-
-If this library helps you, you can support the project:
-
-[![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.paypal.com/paypalme/tusharmasram)
-
-Community links:
-
-- Instagram: https://instagram.com/coderx09
-- Telegram: https://t.me/a_masram444
-
----
-
-## Contributors
-
-Thanks to all contributors who helped improve this library.
-
-- [M&R Games](https://github.com/mrgames13)
-- [Hatzen](https://github.com/Hatzen)
 
 ---
 
