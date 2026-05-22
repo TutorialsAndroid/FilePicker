@@ -29,6 +29,7 @@ Select files, folders, or both from device storage with single-selection and mul
 - [Google Play Store policy and compliance](#google-play-store-policy-and-compliance)
 - [Manifest setup](#manifest-setup)
 - [Basic usage](#basic-usage)
+- [Customizing dialog theme](#customizing-dialog-theme)
 - [Complete Java example](#complete-java-example)
 - [DialogProperties reference](#dialogproperties-reference)
 - [DialogConfigs reference](#dialogconfigs-reference)
@@ -399,6 +400,113 @@ dialog.show();
 ```
 
 > On Android 11+, make sure required storage access is already granted before calling `dialog.show()`.
+
+---
+
+## Customizing dialog theme
+
+This section answers a common GitHub issue/question: **"How to change Dialog theme?"**
+
+`FilePickerDialog` supports custom dialog themes through the constructor that accepts `themeResId`:
+
+```java
+FilePickerDialog dialog = new FilePickerDialog(
+        MainActivity.this,
+        properties,
+        R.style.YourCustomFilePickerTheme
+);
+```
+
+Use this constructor when you want to change the dialog colors, typography, shape, background, or Material/AppCompat dialog styling.
+
+### Complete themed dialog example
+
+```java
+DialogProperties properties = new DialogProperties();
+properties.selection_mode = DialogConfigs.SINGLE_MODE;
+properties.selection_type = DialogConfigs.FILE_SELECT;
+properties.root = new File(DialogConfigs.DEFAULT_DIR);
+properties.offset = new File(DialogConfigs.DEFAULT_DIR);
+properties.error_dir = new File(DialogConfigs.DEFAULT_DIR);
+properties.extensions = null;
+properties.show_hidden_files = false;
+
+FilePickerDialog dialog = new FilePickerDialog(
+        MainActivity.this,
+        properties,
+        R.style.YourCustomFilePickerTheme
+);
+
+dialog.setTitle("Select a File");
+dialog.setPositiveBtnName("Select");
+dialog.setNegativeBtnName("Cancel");
+
+dialog.setDialogSelectionListener(files -> {
+    for (String path : files) {
+        // Use selected path
+    }
+});
+
+dialog.show();
+```
+
+### Example theme using AppCompat
+
+Add this in `res/values/styles.xml`:
+
+```xml
+<style name="YourCustomFilePickerTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <item name="colorPrimary">#6750A4</item>
+    <item name="colorPrimaryDark">#4F378B</item>
+    <item name="colorAccent">#6750A4</item>
+    <item name="android:fontFamily">sans</item>
+</style>
+```
+
+### Example theme using Material Components
+
+Use this only if your app already depends on Material Components and your app theme is Material-compatible.
+
+```xml
+<style name="YourCustomFilePickerTheme" parent="Theme.MaterialComponents.DayNight.Dialog.Alert">
+    <item name="colorPrimary">#6750A4</item>
+    <item name="colorPrimaryVariant">#4F378B</item>
+    <item name="colorSecondary">#6750A4</item>
+    <item name="colorAccent">#6750A4</item>
+    <item name="android:fontFamily">sans</item>
+</style>
+```
+
+### Dark theme example
+
+```xml
+<style name="YourDarkFilePickerTheme" parent="Theme.AppCompat.Dialog.Alert">
+    <item name="android:windowBackground">#121212</item>
+    <item name="android:textColorPrimary">#FFFFFF</item>
+    <item name="android:textColorSecondary">#BDBDBD</item>
+    <item name="colorPrimary">#BB86FC</item>
+    <item name="colorAccent">#BB86FC</item>
+</style>
+```
+
+Then use it:
+
+```java
+FilePickerDialog dialog = new FilePickerDialog(
+        MainActivity.this,
+        properties,
+        R.style.YourDarkFilePickerTheme
+);
+```
+
+### Important theming notes
+
+- The theme must be a dialog-compatible theme.
+- If you use a Material Components parent theme, your app should include Material Components and use a Material-compatible application theme.
+- `setTitle()`, `setPositiveBtnName()`, and `setNegativeBtnName()` only change text, not the full dialog style.
+- Button and checkbox colors are controlled mainly by `colorAccent` and related theme color attributes.
+- For deep UI changes such as row layout, icon size, text sizes, or spacing, customize the library layout resources in your app or fork the library.
+- Do not use a full-screen activity theme as the dialog theme unless you intentionally want full-screen behavior.
 
 ---
 
