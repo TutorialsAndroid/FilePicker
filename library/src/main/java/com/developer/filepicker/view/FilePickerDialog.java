@@ -4,10 +4,11 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.ContextWrapper;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -30,86 +31,84 @@ import com.developer.filepicker.widget.MaterialCheckbox;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
- * @author akshay sunil masram
+ * Path-based file picker dialog.
+ *
+ * Important for Android 11+: arbitrary shared-storage browsing with java.io.File
+ * requires MANAGE_EXTERNAL_STORAGE or a narrower root the app can actually read.
+ * For Play Store apps that are not file managers, prefer SAF/Photo Picker for
+ * user-facing document/media picking.
  */
 public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickListener {
-    private static final String TAG = FilePickerDialog.class.getSimpleName();
+
+    public static final int EXTERNAL_READ_PERMISSION_GRANT = 112;
+
     private final Context context;
     private Activity activity;
     private ListView listView;
-    private TextView dname, dir_path, title;
+    private TextView dname;
+    private TextView dirPath;
+    private TextView title;
     private DialogProperties properties;
     private DialogSelectionListener callbacks;
     private ArrayList<FileListItem> internalList;
     private ExtensionFilter filter;
-    private FileListAdapter mFileListAdapter;
+    private FileListAdapter fileListAdapter;
     private Button select;
-    private String titleStr = null;
-    private String positiveBtnNameStr = null;
-    private String negativeBtnNameStr = null;
-    public static final int EXTERNAL_READ_PERMISSION_GRANT = 112;
-
-    private String getFileExtension(String filePath) {
-        int lastDotIndex = filePath.lastIndexOf('.');
-        if (lastDotIndex != -1) {
-            return filePath.substring(lastDotIndex + 1).toLowerCase();
-        }
-        return "";
-    }
+    private String titleStr;
+    private String positiveBtnNameStr;
+    private String negativeBtnNameStr;
+    private File currentDirectory;
 
     public FilePickerDialog(Context context) {
         super(context);
         this.context = context;
-        properties = new DialogProperties();
-        filter = new ExtensionFilter(properties);
-        internalList = new ArrayList<>();
+        this.activity = findActivity(context);
+        init(new DialogProperties());
     }
 
     @Deprecated
     public FilePickerDialog(Activity activity, Context context) {
         super(context);
-        this.activity = activity;
         this.context = context;
-        properties = new DialogProperties();
-        filter = new ExtensionFilter(properties);
-        internalList = new ArrayList<>();
+        this.activity = activity == null ? findActivity(context) : activity;
+        init(new DialogProperties());
     }
 
     public FilePickerDialog(Context context, DialogProperties properties, int themeResId) {
         super(context, themeResId);
         this.context = context;
-        this.properties = properties;
-        filter = new ExtensionFilter(properties);
-        internalList = new ArrayList<>();
+        this.activity = findActivity(context);
+        init(properties);
     }
 
     @Deprecated
     public FilePickerDialog(Activity activity, Context context, DialogProperties properties, int themeResId) {
         super(context, themeResId);
-        this.activity = activity;
         this.context = context;
-        this.properties = properties;
-        filter = new ExtensionFilter(properties);
-        internalList = new ArrayList<>();
+        this.activity = activity == null ? findActivity(context) : activity;
+        init(properties);
     }
 
     public FilePickerDialog(Context context, DialogProperties properties) {
         super(context);
         this.context = context;
-        this.properties = properties;
-        filter = new ExtensionFilter(properties);
-        internalList = new ArrayList<>();
+        this.activity = findActivity(context);
+        init(properties);
     }
 
     @Deprecated
     public FilePickerDialog(Activity activity, Context context, DialogProperties properties) {
         super(context);
-        this.activity = activity;
         this.context = context;
-        this.properties = properties;
+        this.activity = activity == null ? findActivity(context) : activity;
+        init(properties);
+    }
+
+    private void init(DialogProperties dialogProperties) {
+        properties = dialogProperties == null ? new DialogProperties() : dialogProperties;
+        sanitizeProperties();
         filter = new ExtensionFilter(properties);
         internalList = new ArrayList<>();
     }
@@ -117,30 +116,20 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_main);
+
         listView = findViewById(R.id.fileList);
         select = findViewById(R.id.select);
-        int size = MarkedItemList.getFileCount();
-        if (size == 0) {
-            select.setEnabled(false);
-            int color;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                color = context.getResources().getColor(R.color.colorAccent, context.getTheme());
-            } else {
-                color = context.getResources().getColor(R.color.colorAccent);
-            }
-            select.setTextColor(Color.argb(128, Color.red(color), Color.green(color),
-                    Color.blue(color)));
-        }
         dname = findViewById(R.id.dname);
         title = findViewById(R.id.title);
-        dir_path = findViewById(R.id.dir_path);
+        dirPath = findViewById(R.id.dir_path);
         Button cancel = findViewById(R.id.cancel);
+
         if (negativeBtnNameStr != null) {
             cancel.setText(negativeBtnNameStr);
         }
+
         select.setOnClickListener(view -> {
             String[] paths = MarkedItemList.getSelectedPaths();
             if (callbacks != null) {
@@ -149,166 +138,115 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
             dismiss();
         });
         cancel.setOnClickListener(view -> cancel());
-        mFileListAdapter = new FileListAdapter(internalList, context, properties);
-        mFileListAdapter.setNotifyItemCheckedListener(() -> {
-            positiveBtnNameStr = positiveBtnNameStr == null ?
-                    context.getResources().getString(R.string.choose_button_label) : positiveBtnNameStr;
-            int size1 = MarkedItemList.getFileCount();
-            if (size1 == 0) {
-                select.setEnabled(false);
-                int color;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    color = context.getResources().getColor(R.color.colorAccent,
-                            context.getTheme());
-                } else {
-                    color = context.getResources().getColor(R.color.colorAccent);
-                }
-                select.setTextColor(Color.argb(128, Color.red(color), Color.green(color),
-                        Color.blue(color)));
-                select.setText(positiveBtnNameStr);
-            } else {
-                select.setEnabled(true);
-                int color;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    color = context.getResources().getColor(R.color.colorAccent,
-                            context.getTheme());
-                } else {
-                    color = context.getResources().getColor(R.color.colorAccent);
-                }
-                select.setTextColor(color);
-                String button_label = positiveBtnNameStr + " (" + size1 + ") ";
-                select.setText(button_label);
-            }
-            if (properties.selection_mode == DialogConfigs.SINGLE_MODE) {
-                /*  If a single file has to be selected, clear the previously checked
-                 *  checkbox from the list.
-                 */
-                mFileListAdapter.notifyDataSetChanged();
-            }
-        });
-        listView.setAdapter(mFileListAdapter);
 
-        //Title method added in version 1.0.5
+        fileListAdapter = new FileListAdapter(internalList, context, properties);
+        fileListAdapter.setNotifyItemCheckedListener(this::updateSelectButtonState);
+        listView.setAdapter(fileListAdapter);
+        listView.setOnItemClickListener(this);
+
         setTitle();
-    }
-
-    private void setTitle() {
-        if (title == null || dname == null) {
-            return;
-        }
-        if (titleStr != null) {
-            if (title.getVisibility() == View.INVISIBLE) {
-                title.setVisibility(View.VISIBLE);
-            }
-            title.setText(titleStr);
-            if (dname.getVisibility() == View.VISIBLE) {
-                dname.setVisibility(View.INVISIBLE);
-            }
-        } else {
-            if (title.getVisibility() == View.VISIBLE) {
-                title.setVisibility(View.INVISIBLE);
-            }
-            if (dname.getVisibility() == View.INVISIBLE) {
-                dname.setVisibility(View.VISIBLE);
-            }
-        }
+        updateSelectButtonState();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        positiveBtnNameStr = (
-                positiveBtnNameStr == null ?
-                        context.getResources().getString(R.string.choose_button_label) :
-                        positiveBtnNameStr
-        );
-        select.setText(positiveBtnNameStr);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (Utility.checkMediaAccessPermissions(context)) {
-                //Permission granted...
-                Log.d(TAG, "Permission granted");
-                dir();
-            } else {
-                //Permissions are not granted...
-                Log.d(TAG, "Permissions are not granted. You need to ask permission to user before accessing the storage and showing dialog.");
-            }
+        if (hasRequiredStorageAccess()) {
+            loadInitialDirectory();
         } else {
-            if (Utility.checkStorageAccessPermissions(context)) {
-                Log.d(TAG, "Permission granted");
-                dir();
-            } else {
-                Log.d(TAG, "Permission not granted. You need to ask permission to user before accessing the storage and showing dialog.");
-            }
+            handleMissingPermission();
         }
-    }
-
-    private void dir() {
-        File currLoc;
-        internalList.clear();
-        if (properties.offset.isDirectory() && validateOffsetPath()) {
-            currLoc = new File(properties.offset.getAbsolutePath());
-            FileListItem parent = new FileListItem();
-            parent.setFilename(context.getString(R.string.label_parent_dir));
-            parent.setDirectory(true);
-            parent.setLocation(Objects.requireNonNull(currLoc.getParentFile())
-                    .getAbsolutePath());
-            parent.setTime(currLoc.lastModified());
-            internalList.add(parent);
-        } else if (properties.root.exists() && properties.root.isDirectory()) {
-            currLoc = new File(properties.root.getAbsolutePath());
-        } else {
-            currLoc = new File(properties.error_dir.getAbsolutePath());
-        }
-
-        dname.setText(currLoc.getName());
-        dir_path.setText(currLoc.getAbsolutePath());
-        setTitle();
-        internalList = Utility.prepareFileListEntries(internalList, currLoc, filter,
-                properties.show_hidden_files);
-        mFileListAdapter.notifyDataSetChanged();
-        listView.setOnItemClickListener(this);
-    }
-
-    private boolean validateOffsetPath() {
-        String offset_path = properties.offset.getAbsolutePath();
-        String root_path = properties.root.getAbsolutePath();
-        return !offset_path.equals(root_path) && offset_path.contains(root_path);
     }
 
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        if (internalList.size() > i) {
-            FileListItem fitem = internalList.get(i);
-            if (fitem.isDirectory()) {
-                if (new File(fitem.getLocation()).canRead()) {
-                    File currLoc = new File(fitem.getLocation());
-                    dname.setText(currLoc.getName());
-                    setTitle();
-                    dir_path.setText(currLoc.getAbsolutePath());
-                    internalList.clear();
-                    if (!currLoc.getName().equals(properties.root.getName())) {
-                        FileListItem parent = new FileListItem();
-                        parent.setFilename(context.getString(R.string.label_parent_dir));
-                        parent.setDirectory(true);
-                        parent.setLocation(Objects.requireNonNull(currLoc
-                                .getParentFile()).getAbsolutePath());
-                        parent.setTime(currLoc.lastModified());
-                        internalList.add(parent);
-                    }
-                    internalList = Utility.prepareFileListEntries(internalList, currLoc, filter,
-                            properties.show_hidden_files);
-                    mFileListAdapter.notifyDataSetChanged();
+    public void show() {
+        if (!hasRequiredStorageAccess()) {
+            handleMissingPermission();
+            return;
+        }
+        super.show();
+    }
 
-                    // Count the total number of files in the folder
-                    countFilesInFolder(currLoc);
-                } else {
-                    Toast.makeText(context, R.string.error_dir_access,
-                            Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                MaterialCheckbox fmark = view.findViewById(R.id.file_mark);
-                fmark.performClick();
+    private void loadInitialDirectory() {
+        sanitizeProperties();
+        File startDirectory;
+        if (properties.offset != null && properties.offset.isDirectory() && validateOffsetPath(properties.offset)) {
+            startDirectory = properties.offset;
+        } else if (properties.root != null && properties.root.exists() && properties.root.isDirectory()) {
+            startDirectory = properties.root;
+        } else {
+            startDirectory = properties.error_dir;
+        }
+        loadDirectory(startDirectory, true);
+    }
+
+    private void loadDirectory(File directory, boolean addParentIfNeeded) {
+        if (directory == null || !directory.exists() || !directory.isDirectory()) {
+            directory = properties.error_dir;
+        }
+        if (directory == null || !directory.exists() || !directory.isDirectory() || !directory.canRead()) {
+            showToast(R.string.error_dir_access);
+            return;
+        }
+
+        currentDirectory = directory;
+        internalList.clear();
+
+        if (addParentIfNeeded && shouldShowParent(directory)) {
+            File parentFile = directory.getParentFile();
+            if (parentFile != null && parentFile.canRead() && Utility.isSameOrChild(properties.root, parentFile)) {
+                internalList.add(createParentItem(parentFile, directory.lastModified()));
             }
+        }
+
+        dname.setText(directory.getName().isEmpty() ? directory.getAbsolutePath() : directory.getName());
+        dirPath.setText(directory.getAbsolutePath());
+        setTitle();
+        Utility.prepareFileListEntries(internalList, directory, filter, properties.show_hidden_files);
+        fileListAdapter.notifyDataSetChanged();
+    }
+
+    private boolean shouldShowParent(File directory) {
+        return properties.root != null && !sameFile(directory, properties.root);
+    }
+
+    private FileListItem createParentItem(File parentFile, long fallbackTime) {
+        FileListItem parent = new FileListItem();
+        parent.setFilename(context.getString(R.string.label_parent_dir));
+        parent.setDirectory(true);
+        parent.setLocation(parentFile.getAbsolutePath());
+        parent.setTime(parentFile.lastModified() > 0 ? parentFile.lastModified() : fallbackTime);
+        return parent;
+    }
+
+    private boolean validateOffsetPath(File offset) {
+        return properties.root != null && Utility.isSameOrChild(properties.root, offset) && !sameFile(properties.root, offset);
+    }
+
+    private boolean sameFile(File first, File second) {
+        return first != null && second != null && first.getAbsolutePath().equals(second.getAbsolutePath());
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+        if (position < 0 || position >= internalList.size()) {
+            return;
+        }
+
+        FileListItem item = internalList.get(position);
+        if (item.isDirectory()) {
+            File selectedDirectory = new File(item.getLocation());
+            if (selectedDirectory.canRead()) {
+                loadDirectory(selectedDirectory, true);
+            } else {
+                showToast(R.string.error_dir_access);
+            }
+            return;
+        }
+
+        MaterialCheckbox checkbox = view.findViewById(R.id.file_mark);
+        if (checkbox != null && checkbox.getVisibility() == View.VISIBLE && checkbox.isEnabled()) {
+            checkbox.performClick();
         }
     }
 
@@ -318,7 +256,7 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
             File[] files = folder.listFiles();
             if (files != null) {
                 for (File file : files) {
-                    if (file.isFile()) {
+                    if (file != null && file.isFile()) {
                         count++;
                     }
                 }
@@ -332,8 +270,12 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
     }
 
     public void setProperties(DialogProperties properties) {
-        this.properties = properties;
-        filter = new ExtensionFilter(properties);
+        this.properties = properties == null ? new DialogProperties() : properties;
+        sanitizeProperties();
+        filter = new ExtensionFilter(this.properties);
+        if (isShowing() && fileListAdapter != null && hasRequiredStorageAccess()) {
+            loadInitialDirectory();
+        }
     }
 
     public void setDialogSelectionListener(DialogSelectionListener callbacks) {
@@ -342,197 +284,205 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
 
     @Override
     public void setTitle(CharSequence titleStr) {
-        if (titleStr != null) {
-            this.titleStr = titleStr.toString();
-        } else {
-            this.titleStr = null;
-        }
+        this.titleStr = titleStr == null ? null : titleStr.toString();
         setTitle();
     }
 
-    public void setPositiveBtnName(CharSequence positiveBtnNameStr) {
-        if (positiveBtnNameStr != null) {
-            this.positiveBtnNameStr = positiveBtnNameStr.toString();
-        } else {
-            this.positiveBtnNameStr = null;
+    private void setTitle() {
+        if (title == null || dname == null) {
+            return;
         }
+        if (titleStr != null && !titleStr.trim().isEmpty()) {
+            title.setVisibility(View.VISIBLE);
+            title.setText(titleStr);
+            dname.setVisibility(View.INVISIBLE);
+        } else {
+            title.setVisibility(View.INVISIBLE);
+            dname.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void setPositiveBtnName(CharSequence positiveBtnNameStr) {
+        this.positiveBtnNameStr = positiveBtnNameStr == null ? null : positiveBtnNameStr.toString();
+        updateSelectButtonState();
     }
 
     public void setNegativeBtnName(CharSequence negativeBtnNameStr) {
-        if (negativeBtnNameStr != null) {
-            this.negativeBtnNameStr = negativeBtnNameStr.toString();
-        } else {
-            this.negativeBtnNameStr = null;
-        }
+        this.negativeBtnNameStr = negativeBtnNameStr == null ? null : negativeBtnNameStr.toString();
     }
 
     public void markFiles(List<String> paths) {
-        if (paths != null && paths.size() > 0) {
-            if (properties.selection_mode == DialogConfigs.SINGLE_MODE) {
-                File temp = new File(paths.get(0));
-                switch (properties.selection_type) {
-                    case DialogConfigs.DIR_SELECT:
-                        if (temp.exists() && temp.isDirectory()) {
-                            FileListItem item = new FileListItem();
-                            item.setFilename(temp.getName());
-                            item.setDirectory(temp.isDirectory());
-                            item.setMarked(true);
-                            item.setTime(temp.lastModified());
-                            item.setLocation(temp.getAbsolutePath());
-                            MarkedItemList.addSelectedItem(item);
-                        }
-                        break;
+        if (paths == null || paths.isEmpty()) {
+            updateSelectButtonState();
+            return;
+        }
 
-                    case DialogConfigs.FILE_SELECT:
-                        if (temp.exists() && temp.isFile()) {
-                            FileListItem item = new FileListItem();
-                            item.setFilename(temp.getName());
-                            item.setDirectory(temp.isDirectory());
-                            item.setMarked(true);
-                            item.setTime(temp.lastModified());
-                            item.setLocation(temp.getAbsolutePath());
-                            MarkedItemList.addSelectedItem(item);
-                        }
-                        break;
-
-                    case DialogConfigs.FILE_AND_DIR_SELECT:
-                        if (temp.exists()) {
-                            FileListItem item = new FileListItem();
-                            item.setFilename(temp.getName());
-                            item.setDirectory(temp.isDirectory());
-                            item.setMarked(true);
-                            item.setTime(temp.lastModified());
-                            item.setLocation(temp.getAbsolutePath());
-                            MarkedItemList.addSelectedItem(item);
-                        }
-                        break;
-                }
-            } else {
-                for (String path : paths) {
-                    switch (properties.selection_type) {
-                        case DialogConfigs.DIR_SELECT:
-                            File temp = new File(path);
-                            if (temp.exists() && temp.isDirectory()) {
-                                FileListItem item = new FileListItem();
-                                item.setFilename(temp.getName());
-                                item.setDirectory(temp.isDirectory());
-                                item.setMarked(true);
-                                item.setTime(temp.lastModified());
-                                item.setLocation(temp.getAbsolutePath());
-                                MarkedItemList.addSelectedItem(item);
-                            }
-                            break;
-
-                        case DialogConfigs.FILE_SELECT:
-                            temp = new File(path);
-                            if (temp.exists() && temp.isFile()) {
-                                FileListItem item = new FileListItem();
-                                item.setFilename(temp.getName());
-                                item.setDirectory(temp.isDirectory());
-                                item.setMarked(true);
-                                item.setTime(temp.lastModified());
-                                item.setLocation(temp.getAbsolutePath());
-                                MarkedItemList.addSelectedItem(item);
-                            }
-                            break;
-
-                        case DialogConfigs.FILE_AND_DIR_SELECT:
-                            temp = new File(path);
-                            if (temp.exists() && (temp.isFile() || temp.isDirectory())) {
-                                FileListItem item = new FileListItem();
-                                item.setFilename(temp.getName());
-                                item.setDirectory(temp.isDirectory());
-                                item.setMarked(true);
-                                item.setTime(temp.lastModified());
-                                item.setLocation(temp.getAbsolutePath());
-                                MarkedItemList.addSelectedItem(item);
-                            }
-                            break;
-                    }
-                }
+        if (properties.selection_mode == DialogConfigs.SINGLE_MODE) {
+            markPath(paths.get(0));
+        } else {
+            for (String path : paths) {
+                markPath(path);
             }
+        }
+        updateSelectButtonState();
+        if (fileListAdapter != null) {
+            fileListAdapter.notifyDataSetChanged();
         }
     }
 
-    @Override
-    public void show() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (Utility.checkMediaAccessPermissions(context)) {
-                //Permission granted...
-                super.show();
-                positiveBtnNameStr = positiveBtnNameStr == null ?
-                        context.getResources().getString(R.string.choose_button_label) : positiveBtnNameStr;
-                select.setText(positiveBtnNameStr);
-                int size = MarkedItemList.getFileCount();
-                if (size == 0) {
-                    select.setText(positiveBtnNameStr);
-                } else {
-                    String button_label = positiveBtnNameStr + " (" + size + ") ";
-                    select.setText(button_label);
-                }
-            } else {
-                //Permissions are not granted...
-                Log.d(TAG, "Permissions are not granted");
-            }
+    private void markPath(String path) {
+        if (path == null || path.trim().isEmpty()) {
+            return;
+        }
+        File file = new File(path);
+        if (!isValidSelection(file)) {
+            return;
+        }
+
+        FileListItem item = new FileListItem();
+        item.setFilename(file.getName());
+        item.setDirectory(file.isDirectory());
+        item.setMarked(true);
+        item.setTime(file.lastModified());
+        item.setLocation(file.getAbsolutePath());
+
+        if (properties.selection_mode == DialogConfigs.SINGLE_MODE) {
+            MarkedItemList.addSingleFile(item);
         } else {
-            if (!Utility.checkStorageAccessPermissions(context)) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    ((Activity) context).requestPermissions(new String[]{Manifest.permission
-                            .READ_EXTERNAL_STORAGE}, EXTERNAL_READ_PERMISSION_GRANT);
-                }
-            } else {
-                super.show();
-                positiveBtnNameStr = positiveBtnNameStr == null ?
-                        context.getResources().getString(R.string.choose_button_label) : positiveBtnNameStr;
-                select.setText(positiveBtnNameStr);
-                int size = MarkedItemList.getFileCount();
-                if (size == 0) {
-                    select.setText(positiveBtnNameStr);
-                } else {
-                    String button_label = positiveBtnNameStr + " (" + size + ") ";
-                    select.setText(button_label);
-                }
-            }
+            MarkedItemList.addSelectedItem(item);
+        }
+    }
+
+    private boolean isValidSelection(File file) {
+        if (file == null || !file.exists()) {
+            return false;
+        }
+        switch (properties.selection_type) {
+            case DialogConfigs.DIR_SELECT:
+                return file.isDirectory();
+            case DialogConfigs.FILE_SELECT:
+                return file.isFile();
+            case DialogConfigs.FILE_AND_DIR_SELECT:
+                return file.isFile() || file.isDirectory();
+            default:
+                return false;
         }
     }
 
     @Override
     public void onBackPressed() {
-        //currentDirName is dependent on dname
-        String currentDirName = dname.getText().toString();
-        if (internalList.size() > 0) {
-            FileListItem fitem = internalList.get(0);
-            File currLoc = new File(fitem.getLocation());
-            if (currentDirName.equals(properties.root.getName()) ||
-                    !currLoc.canRead()) {
-                super.onBackPressed();
-            } else {
-                dname.setText(currLoc.getName());
-                dir_path.setText(currLoc.getAbsolutePath());
-                internalList.clear();
-                if (!currLoc.getName().equals(properties.root.getName())) {
-                    FileListItem parent = new FileListItem();
-                    parent.setFilename(context.getString(R.string.label_parent_dir));
-                    parent.setDirectory(true);
-                    parent.setLocation(Objects.requireNonNull(currLoc.getParentFile())
-                            .getAbsolutePath());
-                    parent.setTime(currLoc.lastModified());
-                    internalList.add(parent);
-                }
-                internalList = Utility.prepareFileListEntries(internalList, currLoc, filter,
-                        properties.show_hidden_files);
-                mFileListAdapter.notifyDataSetChanged();
-            }
-            setTitle();
-        } else {
+        if (currentDirectory == null || properties.root == null || sameFile(currentDirectory, properties.root)) {
             super.onBackPressed();
+            return;
         }
+
+        File parent = currentDirectory.getParentFile();
+        if (parent == null || !parent.canRead() || !Utility.isSameOrChild(properties.root, parent)) {
+            super.onBackPressed();
+            return;
+        }
+
+        loadDirectory(parent, true);
     }
 
     @Override
     public void dismiss() {
         MarkedItemList.clearSelectionList();
-        internalList.clear();
+        if (internalList != null) {
+            internalList.clear();
+        }
         super.dismiss();
+    }
+
+    private void updateSelectButtonState() {
+        if (select == null) {
+            return;
+        }
+
+        String baseLabel = positiveBtnNameStr == null
+                ? context.getString(R.string.choose_button_label)
+                : positiveBtnNameStr;
+        int size = MarkedItemList.getFileCount();
+        boolean hasSelection = size > 0;
+        int accentColor = getColorCompat(R.color.colorAccent);
+
+        select.setEnabled(hasSelection);
+        select.setTextColor(hasSelection
+                ? accentColor
+                : Color.argb(128, Color.red(accentColor), Color.green(accentColor), Color.blue(accentColor)));
+        select.setText(hasSelection ? baseLabel + " (" + size + ")" : baseLabel);
+
+        if (properties.selection_mode == DialogConfigs.SINGLE_MODE && fileListAdapter != null) {
+            fileListAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private boolean hasRequiredStorageAccess() {
+        return Utility.hasStorageAccess(context, properties);
+    }
+
+    private void handleMissingPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && properties.allow_manage_external_storage) {
+            if (properties.show_permission_error_toast) {
+                Toast.makeText(context, R.string.error_dir_access, Toast.LENGTH_LONG).show();
+            }
+            Utility.openManageAllFilesAccessSettings(context);
+            return;
+        }
+
+        if (activity != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                Utility.requestRuntimeReadPermissions(activity, EXTERNAL_READ_PERMISSION_GRANT);
+            } else if (activity.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                activity.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, EXTERNAL_READ_PERMISSION_GRANT);
+            }
+            return;
+        }
+
+        if (properties.show_permission_error_toast) {
+            Toast.makeText(context, R.string.error_dir_access, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void sanitizeProperties() {
+        if (properties.root == null) {
+            properties.root = new File(DialogConfigs.DEFAULT_DIR);
+        }
+        if (properties.error_dir == null) {
+            properties.error_dir = properties.root;
+        }
+        if (properties.offset == null) {
+            properties.offset = properties.root;
+        }
+        if (properties.selection_mode != DialogConfigs.SINGLE_MODE && properties.selection_mode != DialogConfigs.MULTI_MODE) {
+            properties.selection_mode = DialogConfigs.SINGLE_MODE;
+        }
+        if (properties.selection_type != DialogConfigs.FILE_SELECT
+                && properties.selection_type != DialogConfigs.DIR_SELECT
+                && properties.selection_type != DialogConfigs.FILE_AND_DIR_SELECT) {
+            properties.selection_type = DialogConfigs.FILE_SELECT;
+        }
+    }
+
+    private int getColorCompat(int colorRes) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return context.getResources().getColor(colorRes, context.getTheme());
+        }
+        return context.getResources().getColor(colorRes);
+    }
+
+    private void showToast(int stringRes) {
+        Toast.makeText(context, stringRes, Toast.LENGTH_SHORT).show();
+    }
+
+    private static Activity findActivity(Context context) {
+        Context current = context;
+        while (current instanceof ContextWrapper) {
+            if (current instanceof Activity) {
+                return (Activity) current;
+            }
+            current = ((ContextWrapper) current).getBaseContext();
+        }
+        return null;
     }
 }

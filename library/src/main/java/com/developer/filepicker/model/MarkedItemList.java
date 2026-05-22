@@ -1,47 +1,78 @@
 package com.developer.filepicker.model;
 
-import java.util.HashMap;
-import java.util.Set;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
- * @author akshay sunil masram
+ * Thread-safe selection store. LinkedHashMap keeps selected path order stable.
  */
-public class MarkedItemList {
+public final class MarkedItemList {
 
-    private static HashMap<String,FileListItem> ourInstance = new HashMap<>();
+    private static final Object LOCK = new Object();
+    private static final LinkedHashMap<String, FileListItem> SELECTED_ITEMS = new LinkedHashMap<>();
+
+    private MarkedItemList() {
+        // No instances.
+    }
 
     public static void addSelectedItem(FileListItem item) {
-        ourInstance.put(item.getLocation(),item);
+        if (item == null || item.getLocation().trim().isEmpty()) {
+            return;
+        }
+        synchronized (LOCK) {
+            SELECTED_ITEMS.put(item.getLocation(), item);
+        }
     }
 
     public static void removeSelectedItem(String key) {
-        ourInstance.remove(key);
+        if (key == null) {
+            return;
+        }
+        synchronized (LOCK) {
+            SELECTED_ITEMS.remove(key);
+        }
     }
 
     public static boolean hasItem(String key) {
-        return ourInstance.containsKey(key);
+        if (key == null) {
+            return false;
+        }
+        synchronized (LOCK) {
+            return SELECTED_ITEMS.containsKey(key);
+        }
     }
 
     public static void clearSelectionList() {
-        ourInstance = new HashMap<>();
+        synchronized (LOCK) {
+            SELECTED_ITEMS.clear();
+        }
     }
 
     public static void addSingleFile(FileListItem item) {
-        ourInstance = new HashMap<>();
-        ourInstance.put(item.getLocation(),item);
+        if (item == null || item.getLocation().trim().isEmpty()) {
+            return;
+        }
+        synchronized (LOCK) {
+            SELECTED_ITEMS.clear();
+            SELECTED_ITEMS.put(item.getLocation(), item);
+        }
     }
 
     public static String[] getSelectedPaths() {
-        Set<String> paths = ourInstance.keySet();
-        String[] strings = new String[paths.size()];
-        int i=0;
-        for(String path:paths)
-        {   strings[i++]=path;
+        synchronized (LOCK) {
+            return SELECTED_ITEMS.keySet().toArray(new String[0]);
         }
-        return strings;
     }
 
     public static int getFileCount() {
-        return ourInstance.size();
+        synchronized (LOCK) {
+            return SELECTED_ITEMS.size();
+        }
+    }
+
+    public static Map<String, FileListItem> snapshot() {
+        synchronized (LOCK) {
+            return new LinkedHashMap<>(SELECTED_ITEMS);
+        }
     }
 }

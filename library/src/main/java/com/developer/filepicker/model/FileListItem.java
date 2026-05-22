@@ -3,16 +3,18 @@ package com.developer.filepicker.model;
 import java.util.Locale;
 
 /**
- * @author akshay sunil masram
+ * Represents one row in the picker list.
  */
 public class FileListItem implements Comparable<FileListItem> {
 
-    private String filename,location;
-    private boolean directory,marked;
+    private String filename;
+    private String location;
+    private boolean directory;
+    private boolean marked;
     private long time;
 
     public String getFilename() {
-        return filename;
+        return filename == null ? "" : filename;
     }
 
     public void setFilename(String filename) {
@@ -20,7 +22,7 @@ public class FileListItem implements Comparable<FileListItem> {
     }
 
     public String getLocation() {
-        return location;
+        return location == null ? "" : location;
     }
 
     public void setLocation(String location) {
@@ -52,18 +54,20 @@ public class FileListItem implements Comparable<FileListItem> {
     }
 
     @Override
-    public int compareTo(FileListItem fileListItem) {
-        if(fileListItem.isDirectory()&&isDirectory()) {
-            return filename.toLowerCase().compareTo(fileListItem.getFilename().toLowerCase(Locale.getDefault()));
-        }
-        else if(!fileListItem.isDirectory()&&!isDirectory()) {
-            return filename.toLowerCase().compareTo(fileListItem.getFilename().toLowerCase(Locale.getDefault()));
-        }
-        else if(fileListItem.isDirectory()&&!isDirectory()) {
-            return 1;
-        }
-        else {
+    public int compareTo(FileListItem other) {
+        if (other == null) {
             return -1;
         }
+
+        if (directory && !other.directory) {
+            return -1;
+        }
+        if (!directory && other.directory) {
+            return 1;
+        }
+
+        return getFilename()
+                .toLowerCase(Locale.ROOT)
+                .compareTo(other.getFilename().toLowerCase(Locale.ROOT));
     }
 }

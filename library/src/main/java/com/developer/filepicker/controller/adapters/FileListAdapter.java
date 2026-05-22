@@ -2,7 +2,6 @@ package com.developer.filepicker.controller.adapters;
 
 import android.content.Context;
 import android.os.Build;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,29 +18,25 @@ import com.developer.filepicker.model.DialogProperties;
 import com.developer.filepicker.model.FileListItem;
 import com.developer.filepicker.model.MarkedItemList;
 import com.developer.filepicker.widget.MaterialCheckbox;
-import com.developer.filepicker.widget.OnCheckedChangeListener;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * @author akshay sunil masram
+ * Adapter that renders files/folders and keeps checkbox state stable during row recycling.
  */
 public class FileListAdapter extends BaseAdapter {
 
-    private static final String TAG = FileListAdapter.class.getSimpleName();
-
-    private ArrayList<FileListItem> listItem;
-    private Context context;
-    private DialogProperties properties;
+    private final ArrayList<FileListItem> listItem;
+    private final Context context;
+    private final DialogProperties properties;
     private NotifyItemChecked notifyItemChecked;
 
-    public FileListAdapter(ArrayList<FileListItem> listItem, Context context,
-                           DialogProperties properties) {
-        this.listItem = listItem;
+    public FileListAdapter(ArrayList<FileListItem> listItem, Context context, DialogProperties properties) {
+        this.listItem = listItem == null ? new ArrayList<>() : listItem;
         this.context = context;
-        this.properties = properties;
+        this.properties = properties == null ? new DialogProperties() : properties;
     }
 
     @Override
@@ -50,92 +45,43 @@ public class FileListAdapter extends BaseAdapter {
     }
 
     @Override
-    public FileListItem getItem(int i) {
-        return listItem.get(i);
+    public FileListItem getItem(int position) {
+        return listItem.get(position);
     }
 
     @Override
-    public long getItemId(int i) {
-        return i;
+    public long getItemId(int position) {
+        return position;
     }
 
     @Override
-    public View getView(final int i, View view, ViewGroup viewGroup) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         final ViewHolder holder;
-        if (view == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.dialog_file_list_item,
-                    viewGroup, false);
-            holder = new ViewHolder(view);
-            view.setTag(holder);
+        if (convertView == null) {
+            convertView = LayoutInflater.from(context).inflate(R.layout.dialog_file_list_item, parent, false);
+            holder = new ViewHolder(convertView);
+            convertView.setTag(holder);
         } else {
-            holder = (ViewHolder) view.getTag();
-        }
-        final FileListItem item = listItem.get(i);
-        if (MarkedItemList.hasItem(item.getLocation())) {
-            Animation animation = AnimationUtils.loadAnimation(context,
-                    R.anim.marked_item_animation);
-            view.setAnimation(animation);
-        } else {
-            Animation animation = AnimationUtils.loadAnimation(context,
-                    R.anim.unmarked_item_animation);
-            view.setAnimation(animation);
-        }
-        if (item.isDirectory()) {
-            holder.type_icon.setImageResource(R.mipmap.ic_type_folder);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                holder.type_icon.setColorFilter(context.getResources()
-                        .getColor(R.color.colorPrimary, context.getTheme()));
-            } else {
-                holder.type_icon.setColorFilter(context.getResources()
-                        .getColor(R.color.colorPrimary));
-            }
-            if (properties.selection_type == DialogConfigs.FILE_SELECT) {
-                holder.checkbox.setVisibility(View.INVISIBLE);
-            } else {
-                holder.checkbox.setVisibility(View.VISIBLE);
-            }
-        } else {
-            holder.type_icon.setImageResource(R.mipmap.ic_type_file);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                holder.type_icon.setColorFilter(context.getResources()
-                        .getColor(R.color.colorAccent, context.getTheme()));
-            } else {
-                holder.type_icon.setColorFilter(context.getResources()
-                        .getColor(R.color.colorAccent));
-            }
-            if (properties.selection_type == DialogConfigs.DIR_SELECT) {
-                holder.checkbox.setVisibility(View.INVISIBLE);
-            } else {
-                holder.checkbox.setVisibility(View.VISIBLE);
-            }
-        }
-        holder.type_icon.setContentDescription(item.getFilename());
-        holder.name.setText(item.getFilename());
-        DateFormat dateFormatter = android.text.format.DateFormat.getMediumDateFormat(context);
-        DateFormat timeFormatter = android.text.format.DateFormat.getTimeFormat(context);
-        Date date = new Date(item.getTime());
-        if (i == 0 && item.getFilename().startsWith(context.getString(R.string.label_parent_dir))) {
-            holder.type.setText(R.string.label_parent_directory);
-        } else {
-            holder.type.setText(String.format(context.getString(R.string.last_edit),
-                    dateFormatter.format(date), timeFormatter.format(date)));
-        }
-        if (holder.checkbox.getVisibility() == View.VISIBLE) {
-            if (i == 0 && item.getFilename().startsWith(context.getString(R.string.label_parent_dir))) {
-                holder.checkbox.setVisibility(View.INVISIBLE);
-            }
-            if (MarkedItemList.hasItem(item.getLocation())) {
-                holder.checkbox.setChecked(true);
-            } else {
-                holder.checkbox.setChecked(false);
-            }
+            holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.checkbox.setOnCheckedChangedListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(MaterialCheckbox checkbox, boolean isChecked) {
+        final FileListItem item = listItem.get(position);
+        final boolean isParentRow = isParentRow(position, item);
+        final boolean isSelectable = isSelectable(item, isParentRow);
+
+        applySelectionAnimation(convertView, item);
+        bindIcon(holder, item);
+        bindTexts(holder, item, isParentRow);
+
+        holder.checkbox.setOnCheckedChangedListener(null);
+        holder.checkbox.setVisibility(isSelectable ? View.VISIBLE : View.INVISIBLE);
+        holder.checkbox.setChecked(MarkedItemList.hasItem(item.getLocation()));
+        holder.checkbox.setEnabled(isSelectable);
+
+        if (isSelectable) {
+            holder.checkbox.setOnCheckedChangedListener((checkbox, isChecked) -> {
                 item.setMarked(isChecked);
-                if (item.isMarked()) {
+                if (isChecked) {
                     if (properties.selection_mode == DialogConfigs.MULTI_MODE) {
                         MarkedItemList.addSelectedItem(item);
                     } else {
@@ -144,26 +90,84 @@ public class FileListAdapter extends BaseAdapter {
                 } else {
                     MarkedItemList.removeSelectedItem(item.getLocation());
                 }
-                notifyItemChecked.notifyCheckBoxIsClicked();
-            }
-        });
-        return view;
+                if (notifyItemChecked != null) {
+                    notifyItemChecked.notifyCheckBoxIsClicked();
+                }
+            });
+        }
+
+        return convertView;
     }
 
-    private class ViewHolder {
-        ImageView type_icon;
-        TextView name, type;
-        MaterialCheckbox checkbox;
+    private void applySelectionAnimation(View view, FileListItem item) {
+        int animationRes = MarkedItemList.hasItem(item.getLocation())
+                ? R.anim.marked_item_animation
+                : R.anim.unmarked_item_animation;
+        Animation animation = AnimationUtils.loadAnimation(context, animationRes);
+        view.startAnimation(animation);
+    }
 
-        ViewHolder(View itemView) {
-            name = itemView.findViewById(R.id.fname);
-            type = itemView.findViewById(R.id.ftype);
-            type_icon = itemView.findViewById(R.id.image_type);
-            checkbox = itemView.findViewById(R.id.file_mark);
+    private void bindIcon(ViewHolder holder, FileListItem item) {
+        if (item.isDirectory()) {
+            holder.typeIcon.setImageResource(R.mipmap.ic_type_folder);
+            holder.typeIcon.setColorFilter(getColorCompat(R.color.colorPrimary));
+        } else {
+            holder.typeIcon.setImageResource(R.mipmap.ic_type_file);
+            holder.typeIcon.setColorFilter(getColorCompat(R.color.colorAccent));
         }
+        holder.typeIcon.setContentDescription(item.getFilename());
+    }
+
+    private void bindTexts(ViewHolder holder, FileListItem item, boolean isParentRow) {
+        holder.name.setText(item.getFilename());
+        if (isParentRow) {
+            holder.type.setText(R.string.label_parent_directory);
+        } else {
+            Date date = new Date(item.getTime());
+            DateFormat dateFormatter = android.text.format.DateFormat.getMediumDateFormat(context);
+            DateFormat timeFormatter = android.text.format.DateFormat.getTimeFormat(context);
+            holder.type.setText(String.format(context.getString(R.string.last_edit),
+                    dateFormatter.format(date), timeFormatter.format(date)));
+        }
+    }
+
+    private boolean isSelectable(FileListItem item, boolean isParentRow) {
+        if (item == null || isParentRow) {
+            return false;
+        }
+        if (item.isDirectory()) {
+            return properties.selection_type != DialogConfigs.FILE_SELECT;
+        }
+        return properties.selection_type != DialogConfigs.DIR_SELECT;
+    }
+
+    private boolean isParentRow(int position, FileListItem item) {
+        return position == 0 && item != null
+                && item.getFilename().startsWith(context.getString(R.string.label_parent_dir));
+    }
+
+    private int getColorCompat(int colorRes) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return context.getResources().getColor(colorRes, context.getTheme());
+        }
+        return context.getResources().getColor(colorRes);
     }
 
     public void setNotifyItemCheckedListener(NotifyItemChecked notifyItemChecked) {
         this.notifyItemChecked = notifyItemChecked;
+    }
+
+    private static class ViewHolder {
+        final ImageView typeIcon;
+        final TextView name;
+        final TextView type;
+        final MaterialCheckbox checkbox;
+
+        ViewHolder(View itemView) {
+            name = itemView.findViewById(R.id.fname);
+            type = itemView.findViewById(R.id.ftype);
+            typeIcon = itemView.findViewById(R.id.image_type);
+            checkbox = itemView.findViewById(R.id.file_mark);
+        }
     }
 }

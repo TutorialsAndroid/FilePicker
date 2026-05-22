@@ -13,78 +13,76 @@ import android.view.View;
 import com.developer.filepicker.R;
 
 /**
- * @author akshay sunil masram
+ * Lightweight custom checkbox used by the file picker rows.
  */
 public class MaterialCheckbox extends View {
 
-    private Context context;
     private int minDim;
-    private Paint paint;
-    private RectF bounds;
+    private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final RectF bounds = new RectF();
+    private final Path tick = new Path();
     private boolean checked;
     private OnCheckedChangeListener onCheckedChangeListener;
-    private Path tick;
 
     public MaterialCheckbox(Context context) {
         super(context);
-        initView(context);
+        initView();
     }
 
     public MaterialCheckbox(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initView(context);
+        initView();
     }
 
     public MaterialCheckbox(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initView(context);
+        initView();
     }
 
-    public void initView(Context context) {
-        this.context = context;
+    private void initView() {
         checked = false;
-        tick = new Path();
-        paint = new Paint();
-        bounds = new RectF();
-        OnClickListener onClickListener = new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setChecked(!checked);
-                onCheckedChangeListener.onCheckedChanged(MaterialCheckbox.this, isChecked());
-            }
-        };
+        setClickable(true);
+        setFocusable(true);
+        setOnClickListener(v -> toggle());
+        updateAccessibilityState();
+    }
 
-        setOnClickListener(onClickListener);
+    private void toggle() {
+        setChecked(!checked);
+        if (onCheckedChangeListener != null) {
+            onCheckedChangeListener.onCheckedChanged(MaterialCheckbox.this, checked);
+        }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (isChecked()) {
-            paint.reset();
-            paint.setAntiAlias(true);
-            bounds.set(minDim / 10, minDim / 10, minDim - (minDim / 10), minDim - (minDim / 10));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                paint.setColor(getResources().getColor(R.color.colorAccent, context.getTheme()));
-            } else {
-                paint.setColor(getResources().getColor(R.color.colorAccent));
-            }
-            canvas.drawRoundRect(bounds, minDim / 8, minDim / 8, paint);
+        if (minDim <= 0) {
+            return;
+        }
 
-            paint.setColor(Color.parseColor("#FFFFFF"));
-            paint.setStrokeWidth(minDim / 10);
+        paint.reset();
+        paint.setAntiAlias(true);
+        bounds.set(minDim / 10f, minDim / 10f, minDim - (minDim / 10f), minDim - (minDim / 10f));
+
+        if (checked) {
+            paint.setStyle(Paint.Style.FILL);
+            paint.setColor(getColorCompat(R.color.colorAccent));
+            canvas.drawRoundRect(bounds, minDim / 8f, minDim / 8f, paint);
+
+            paint.setColor(Color.WHITE);
+            paint.setStrokeWidth(Math.max(2f, minDim / 10f));
             paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeJoin(Paint.Join.BEVEL);
+            paint.setStrokeCap(Paint.Cap.ROUND);
+            paint.setStrokeJoin(Paint.Join.ROUND);
             canvas.drawPath(tick, paint);
         } else {
-            paint.reset();
-            paint.setAntiAlias(true);
-            bounds.set(minDim / 10, minDim / 10, minDim - (minDim / 10), minDim - (minDim / 10));
+            paint.setStyle(Paint.Style.FILL);
             paint.setColor(Color.parseColor("#C1C1C1"));
-            canvas.drawRoundRect(bounds, minDim / 8, minDim / 8, paint);
+            canvas.drawRoundRect(bounds, minDim / 8f, minDim / 8f, paint);
 
-            bounds.set(minDim / 5, minDim / 5, minDim - (minDim / 5), minDim - (minDim / 5));
-            paint.setColor(Color.parseColor("#FFFFFF"));
+            bounds.set(minDim / 5f, minDim / 5f, minDim - (minDim / 5f), minDim - (minDim / 5f));
+            paint.setColor(Color.WHITE);
             canvas.drawRect(bounds, paint);
         }
     }
@@ -92,15 +90,17 @@ public class MaterialCheckbox extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        int height = getMeasuredHeight();
         int width = getMeasuredWidth();
+        int height = getMeasuredHeight();
         minDim = Math.min(width, height);
-        bounds.set(minDim / 10, minDim / 10, minDim - (minDim / 10), minDim - (minDim / 10));
-        tick.moveTo(minDim / 4, minDim / 2);
-        tick.lineTo(minDim / 2.5f, minDim - (minDim / 3));
 
-        tick.moveTo(minDim / 2.75f, minDim - (minDim / 3.25f));
-        tick.lineTo(minDim - (minDim / 4), minDim / 3);
+        tick.reset();
+        if (minDim > 0) {
+            tick.moveTo(minDim * 0.25f, minDim * 0.52f);
+            tick.lineTo(minDim * 0.43f, minDim * 0.70f);
+            tick.lineTo(minDim * 0.76f, minDim * 0.34f);
+        }
+
         setMeasuredDimension(width, height);
     }
 
@@ -109,11 +109,27 @@ public class MaterialCheckbox extends View {
     }
 
     public void setChecked(boolean checked) {
+        if (this.checked == checked) {
+            return;
+        }
         this.checked = checked;
+        updateAccessibilityState();
         invalidate();
     }
 
     public void setOnCheckedChangedListener(OnCheckedChangeListener onCheckedChangeListener) {
         this.onCheckedChangeListener = onCheckedChangeListener;
+    }
+
+    private int getColorCompat(int colorRes) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return getResources().getColor(colorRes, getContext().getTheme());
+        }
+        return getResources().getColor(colorRes);
+    }
+
+    private void updateAccessibilityState() {
+        setSelected(checked);
+        setContentDescription(checked ? "Checked" : "Unchecked");
     }
 }
