@@ -7,7 +7,7 @@
 **A lightweight Android file and directory picker library for Java/Kotlin Android apps.**
 
 [![API](https://img.shields.io/badge/API-23%2B-brightgreen.svg?style=flat)](#requirements)
-[![Version](https://img.shields.io/badge/version-10.0.0-blue.svg)](#installation)
+[![Version](https://img.shields.io/badge/version-10.1.1-blue.svg)](#installation)
 [![License](https://img.shields.io/badge/License-Apache%202.0-orange.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Maven Central](https://img.shields.io/badge/Maven%20Central-FilePicker-blue)](#installation)
 [![AndroidX](https://img.shields.io/badge/AndroidX-supported-brightgreen)](#requirements)
@@ -21,7 +21,7 @@ Select files, folders, or both from device storage with single-selection and mul
 ## Table of Contents
 
 - [Overview](#overview)
-- [What is new in v10.0.0](#what-is-new-in-v1000)
+- [What is new in v10.1.1](#what-is-new-in-v1011)
 - [Important Android storage reality](#important-android-storage-reality)
 - [Requirements](#requirements)
 - [Installation](#installation)
@@ -30,6 +30,7 @@ Select files, folders, or both from device storage with single-selection and mul
 - [Manifest setup](#manifest-setup)
 - [Basic usage](#basic-usage)
 - [Customizing dialog theme](#customizing-dialog-theme)
+- [Changing dialog width and height](#changing-dialog-width-and-height)
 - [Complete Java example](#complete-java-example)
 - [DialogProperties reference](#dialogproperties-reference)
 - [DialogConfigs reference](#dialogconfigs-reference)
@@ -42,7 +43,7 @@ Select files, folders, or both from device storage with single-selection and mul
 - [Handling Android 14+ partial photo/video access](#handling-android-14-partial-photovideo-access)
 - [Play Store safe integration options](#play-store-safe-integration-options)
 - [Troubleshooting](#troubleshooting)
-- [Migration guide from v9.x to v10.0.0](#migration-guide-from-v9x-to-v1000)
+- [Migration guide from v9.x to v10.1.1](#migration-guide-from-v9x-to-v1011)
 - [Security and privacy recommendations](#security-and-privacy-recommendations)
 - [FAQ](#faq)
 - [Contributing](#contributing)
@@ -76,9 +77,17 @@ dialog.setDialogSelectionListener(files -> {
 
 ---
 
-## What is new in v10.0.0
+## What is new in v10.1.1
 
-Version `10.0.0` focuses on modern Android support, stability, and clearer storage behavior.
+Version `10.1.1` focuses on modern Android support, stability, clearer storage behavior, and better dialog customization.
+
+### New in v10.1.1
+
+- Added programmatic dialog width and height customization.
+- Added responsive percentage-based dialog sizing for tablets, foldables, landscape mode, and ultra-wide screens.
+- Added direct layout-param based sizing support using `ViewGroup.LayoutParams.MATCH_PARENT`, `WRAP_CONTENT`, or exact pixel values.
+- Documented the GitHub issue solution for changing dialog width and height before showing the picker.
+- Improved README examples for dialog theme and dialog size customization.
 
 ### Core improvements
 
@@ -141,7 +150,7 @@ Official references:
 | Returns | Direct file paths |
 | Best use case | File manager, document manager, backup/restore, local file tools, developer utilities |
 
-> **minSdk note:** FilePicker v10.0.0 is documented for `minSdk 23`. Android 5.0 and 5.1 support has been removed from this README and should not be advertised in badges, Gradle metadata, or release notes.
+> **minSdk note:** FilePicker v10.1.1 is documented for `minSdk 23`. Android 5.0 and 5.1 support has been removed from this README and should not be advertised in badges, Gradle metadata, or release notes.
 
 ---
 
@@ -165,7 +174,7 @@ Add the dependency in your app module:
 
 ```gradle
 dependencies {
-    implementation "io.github.tutorialsandroid:filepicker:10.0.0"
+    implementation "io.github.tutorialsandroid:filepicker:10.1.1"
 }
 ```
 
@@ -510,6 +519,146 @@ FilePickerDialog dialog = new FilePickerDialog(
 
 ---
 
+## Changing dialog width and height
+
+This section answers a common GitHub issue/question: **"Change Width and Height"**.
+
+From `v10.1.1`, `FilePickerDialog` supports programmatic dialog sizing. This is useful for:
+
+- Ultra-wide screens
+- Landscape mode
+- Tablets
+- Foldables
+- ChromeOS devices
+- Custom kiosk-style layouts
+- Apps that need a wider picker UI than the default Android dialog width
+
+You should call the size method **before** `dialog.show()`.
+
+### Set size using screen percentage
+
+Use this when you want responsive sizing across different screen sizes.
+
+```java
+DialogProperties properties = new DialogProperties();
+
+FilePickerDialog dialog = new FilePickerDialog(MainActivity.this, properties);
+
+dialog.setTitle("Select File");
+dialog.setPositiveBtnName("Select");
+dialog.setNegativeBtnName("Cancel");
+
+// 85% of screen width and 75% of screen height
+dialog.setDialogSizeByPercent(0.85f, 0.75f);
+
+dialog.show();
+```
+
+### Set width only and keep default height
+
+```java
+dialog.setDialogSizeByPercent(0.90f, -1f);
+dialog.show();
+```
+
+### Set height only and keep default width
+
+```java
+dialog.setDialogSizeByPercent(-1f, 0.75f);
+dialog.show();
+```
+
+### Use direct layout params
+
+Use this when you want exact Android layout behavior.
+
+```java
+dialog.setDialogSize(
+        ViewGroup.LayoutParams.MATCH_PARENT,
+        ViewGroup.LayoutParams.WRAP_CONTENT
+);
+
+dialog.show();
+```
+
+Required import:
+
+```java
+import android.view.ViewGroup;
+```
+
+### Use exact pixel values
+
+```java
+dialog.setDialogSize(1200, 700);
+dialog.show();
+```
+
+> Pixel values are not recommended for normal apps because they may look different on different screen densities. Prefer `setDialogSizeByPercent()` for responsive UI.
+
+### Complete width/height example
+
+```java
+DialogProperties properties = new DialogProperties();
+properties.selection_mode = DialogConfigs.SINGLE_MODE;
+properties.selection_type = DialogConfigs.FILE_SELECT;
+properties.root = new File(DialogConfigs.DEFAULT_DIR);
+properties.offset = new File(DialogConfigs.DEFAULT_DIR);
+properties.error_dir = new File(DialogConfigs.DEFAULT_DIR);
+properties.extensions = null;
+properties.show_hidden_files = false;
+
+FilePickerDialog dialog = new FilePickerDialog(MainActivity.this, properties);
+
+dialog.setTitle("Select a File");
+dialog.setPositiveBtnName("Select");
+dialog.setNegativeBtnName("Cancel");
+
+// Makes the dialog wider on landscape, tablet, foldable, and ultra-wide displays.
+dialog.setDialogSizeByPercent(0.85f, 0.75f);
+
+dialog.setDialogSelectionListener(files -> {
+    for (String path : files) {
+        // Use selected path
+    }
+});
+
+dialog.show();
+```
+
+### Dialog size API
+
+| Method | Description |
+|---|---|
+| `setDialogSize(int width, int height)` | Sets dialog width and height using Android layout params or exact pixel values |
+| `setDialogSizeByPercent(float widthPercent, float heightPercent)` | Sets dialog width and height using screen percentage |
+| `ViewGroup.LayoutParams.MATCH_PARENT` | Makes the dialog use maximum available width/height |
+| `ViewGroup.LayoutParams.WRAP_CONTENT` | Keeps default content-based size |
+| `-1f` in percent method | Keeps that dimension unchanged/default |
+
+### Recommended values
+
+| Use case | Recommended value |
+|---|---|
+| Normal phones | Default dialog size |
+| Landscape phones | `setDialogSizeByPercent(0.90f, 0.80f)` |
+| Tablets | `setDialogSizeByPercent(0.75f, 0.80f)` |
+| Ultra-wide screens | `setDialogSizeByPercent(0.85f, 0.75f)` |
+| Full-width picker | `setDialogSize(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)` |
+
+### Important notes
+
+- Call `setDialogSize()` or `setDialogSizeByPercent()` before `dialog.show()`.
+- If called after `dialog.show()`, the dialog should update immediately.
+- Use percentage-based sizing for responsive UI.
+- Use direct layout params only when you need exact Android layout behavior.
+- Avoid hardcoded pixels unless you are building for a fixed-size device.
+- Dialog sizing changes the outer dialog window size, not the internal row layout.
+- For deeper layout changes such as row height, icon size, padding, or text size, customize the library XML layout resources or fork the UI layer.
+
+
+---
+
 ## Complete Java example
 
 This sample uses modern `ActivityResultLauncher` APIs instead of deprecated `startActivityForResult()`.
@@ -582,6 +731,10 @@ public class MainActivity extends AppCompatActivity {
         filePickerDialog.setTitle("Select a File");
         filePickerDialog.setPositiveBtnName("Select");
         filePickerDialog.setNegativeBtnName("Cancel");
+
+        // Optional v10.1.1 feature:
+        // Make the dialog wider/taller on landscape, tablet, foldable, or ultra-wide screens.
+        filePickerDialog.setDialogSizeByPercent(0.85f, 0.75f);
 
         filePickerDialog.setDialogSelectionListener(files -> {
             for (String path : files) {
@@ -1001,6 +1154,24 @@ If your APK is used internally, enterprise-side-loaded, or outside Google Play, 
 
 ## Troubleshooting
 
+### Dialog looks too small on tablets, landscape, or ultra-wide screens
+
+Use the v10.1.1 dialog sizing API before showing the picker:
+
+```java
+dialog.setDialogSizeByPercent(0.85f, 0.75f);
+dialog.show();
+```
+
+For full-width behavior:
+
+```java
+dialog.setDialogSize(
+        ViewGroup.LayoutParams.MATCH_PARENT,
+        ViewGroup.LayoutParams.WRAP_CONTENT
+);
+```
+
 ### Dialog opens but folder is empty
 
 Possible causes:
@@ -1067,12 +1238,12 @@ Possible causes:
 
 ---
 
-## Migration guide from v9.x to v10.0.0
+## Migration guide from v9.x to v10.1.1
 
 ### 1. Update dependency
 
 ```gradle
-implementation "io.github.tutorialsandroid:filepicker:10.0.0"
+implementation "io.github.tutorialsandroid:filepicker:10.1.1"
 ```
 
 ### 2. Replace old permission code
@@ -1122,7 +1293,24 @@ Ask yourself:
 
 Only use `MANAGE_EXTERNAL_STORAGE` when the answer is policy-safe.
 
-### 5. Test on real devices
+### 5. Update dialog size usage if needed
+
+If your old app looked too narrow on landscape, tablet, foldable, or ultra-wide screens, use the v10.1.1 sizing API:
+
+```java
+dialog.setDialogSizeByPercent(0.85f, 0.75f);
+```
+
+or:
+
+```java
+dialog.setDialogSize(
+        ViewGroup.LayoutParams.MATCH_PARENT,
+        ViewGroup.LayoutParams.WRAP_CONTENT
+);
+```
+
+### 6. Test on real devices
 
 Test at least:
 
@@ -1196,6 +1384,23 @@ Modern Android restricts access to many app-private and protected directories. E
 ### Is root access required?
 
 No.
+
+### Can I change dialog width and height?
+
+Yes. From v10.1.1, use:
+
+```java
+dialog.setDialogSizeByPercent(0.85f, 0.75f);
+```
+
+or:
+
+```java
+dialog.setDialogSize(
+        ViewGroup.LayoutParams.MATCH_PARENT,
+        ViewGroup.LayoutParams.WRAP_CONTENT
+);
+```
 
 ### Does this library upload files?
 

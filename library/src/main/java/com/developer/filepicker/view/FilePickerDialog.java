@@ -32,6 +32,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.view.ViewGroup;
+import android.view.WindowManager;
+
 /**
  * Path-based file picker dialog.
  *
@@ -60,6 +63,11 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
     private String positiveBtnNameStr;
     private String negativeBtnNameStr;
     private File currentDirectory;
+
+    private int dialogWidth = ViewGroup.LayoutParams.WRAP_CONTENT;
+    private int dialogHeight = ViewGroup.LayoutParams.WRAP_CONTENT;
+    private float dialogWidthPercent = -1f;
+    private float dialogHeightPercent = -1f;
 
     public FilePickerDialog(Context context) {
         super(context);
@@ -156,6 +164,7 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
         } else {
             handleMissingPermission();
         }
+        applyDialogSize();
     }
 
     @Override
@@ -484,5 +493,81 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
             current = ((ContextWrapper) current).getBaseContext();
         }
         return null;
+    }
+
+    /**
+     * Sets the dialog width and height directly.
+     *
+     * Use ViewGroup.LayoutParams.MATCH_PARENT,
+     * ViewGroup.LayoutParams.WRAP_CONTENT,
+     * or a pixel value.
+     */
+    public void setDialogSize(int width, int height) {
+        this.dialogWidth = width;
+        this.dialogHeight = height;
+        this.dialogWidthPercent = -1f;
+        this.dialogHeightPercent = -1f;
+
+        if (isShowing()) {
+            applyDialogSize();
+        }
+    }
+
+    /**
+     * Sets the dialog size using screen percentage.
+     *
+     * Example:
+     * setDialogSizeByPercent(0.85f, 0.75f);
+     *
+     * Width and height values must be between 0.1f and 1.0f.
+     */
+    public void setDialogSizeByPercent(float widthPercent, float heightPercent) {
+        this.dialogWidthPercent = sanitizePercent(widthPercent);
+        this.dialogHeightPercent = sanitizePercent(heightPercent);
+
+        if (isShowing()) {
+            applyDialogSize();
+        }
+    }
+
+    private float sanitizePercent(float percent) {
+        if (percent <= 0f) {
+            return -1f;
+        }
+        if (percent < 0.1f) {
+            return 0.1f;
+        }
+        if (percent > 1f) {
+            return 1f;
+        }
+        return percent;
+    }
+
+    private void applyDialogSize() {
+        Window window = getWindow();
+        if (window == null) {
+            return;
+        }
+
+        int width = dialogWidth;
+        int height = dialogHeight;
+
+        if (dialogWidthPercent > 0f || dialogHeightPercent > 0f) {
+            WindowManager windowManager = window.getWindowManager();
+            if (windowManager != null) {
+                android.graphics.Point size = new android.graphics.Point();
+                windowManager.getDefaultDisplay().getSize(size);
+
+                if (dialogWidthPercent > 0f) {
+                    width = (int) (size.x * dialogWidthPercent);
+                }
+
+                if (dialogHeightPercent > 0f) {
+                    height = (int) (size.y * dialogHeightPercent);
+                }
+            }
+        }
+
+        window.setLayout(width, height);
     }
 }
