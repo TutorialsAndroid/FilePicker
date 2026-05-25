@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FilePicker v10.1.2 — Android File & Directory Picker Library</title>
-  <meta name="description" content="FilePicker is a lightweight Android file and directory picker library for Java and Kotlin apps. Supports API 23+, AndroidX, single/multiple selection, file size filters, dialog customization, and modern Android storage documentation." />
-  <meta name="keywords" content="Android FilePicker, Android file picker library, Android directory picker, Java Android library, Kotlin Android file picker, Android storage permissions, MANAGE_EXTERNAL_STORAGE, READ_MEDIA_IMAGES, Maven Central, JitPack" />
+  <title>FilePicker v10.1.3 — Android File & Directory Picker Library</title>
+  <meta name="description" content="FilePicker is a lightweight Android file and directory picker library for Java and Kotlin apps. Supports API 23+, AndroidX, single/multiple selection, file size filters, checkbox color customization, dialog customization, and modern Android storage documentation." />
+  <meta name="keywords" content="Android FilePicker, Android file picker library, Android directory picker, Java Android library, Kotlin Android file picker, Android checkbox color, Android storage permissions, MANAGE_EXTERNAL_STORAGE, READ_MEDIA_IMAGES, Maven Central, JitPack" />
   <meta name="author" content="TutorialsAndroid" />
   <meta name="theme-color" content="#111827" />
 
-  <meta property="og:title" content="FilePicker v10.1.2 — Android File & Directory Picker Library" />
-  <meta property="og:description" content="A modern Android file and directory picker library with API 23+ support, Maven Central, JitPack, dialog customization, file size filtering, and Play Store storage guidance." />
+  <meta property="og:title" content="FilePicker v10.1.3 — Android File & Directory Picker Library" />
+  <meta property="og:description" content="A modern Android file and directory picker library with API 23+ support, Maven Central, JitPack, dialog customization, checkbox color customization, file size filtering, and Play Store storage guidance." />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="https://github.com/TutorialsAndroid/FilePicker/blob/master/sample/src/main/res/mipmap-xxhdpi/ic_launcher.png?raw=true" />
 
@@ -690,14 +690,14 @@
           <span class="pill">📦 Maven Central</span>
           <span class="pill">🔗 JitPack</span>
           <span class="pill">⚙️ AndroidX</span>
-          <span class="pill">🚀 v10.1.2</span>
+          <span class="pill">🚀 v10.1.3</span>
         </div>
         <h1><span class="gradient-text">Android File Picker</span> built for modern storage.</h1>
         <p>
-          FilePicker is a lightweight Android file and directory picker library for Java and Kotlin apps. It supports file selection, directory selection, single mode, multi mode, extension filtering, file size filtering, dialog themes, responsive dialog sizing, and detailed Android storage guidance for Android 11, 13, and 14+.
+          FilePicker is a lightweight Android file and directory picker library for Java and Kotlin apps. It supports file selection, directory selection, single mode, multi mode, extension filtering, file size filtering, checkbox color customization, dialog themes, responsive dialog sizing, and detailed Android storage guidance for Android 11, 13, and 14+.
         </p>
         <div class="hero-actions">
-          <a class="btn primary" href="#installation">Install v10.1.2</a>
+          <a class="btn primary" href="#installation">Install v10.1.3</a>
           <a class="btn" href="https://github.com/TutorialsAndroid/FilePicker" target="_blank" rel="noopener">View on GitHub</a>
           <a class="btn sponsor" href="https://github.com/sponsors/TutorialsAndroid" target="_blank" rel="noopener">❤ Sponsor</a>
         </div>
@@ -747,17 +747,27 @@
         <div class="card"><div class="icon">📂</div><h3>Files & folders</h3><p>Select files, directories, or both depending on your app flow.</p></div>
         <div class="card"><div class="icon">✅</div><h3>Single / multi</h3><p>Use single-selection mode or allow users to select many files.</p></div>
         <div class="card"><div class="icon">🎛️</div><h3>Advanced filters</h3><p>Filter by extension and file size using min/max byte limits.</p></div>
-        <div class="card"><div class="icon">🎨</div><h3>Custom UI</h3><p>Change title, buttons, theme, dialog width, and dialog height.</p></div>
+        <div class="card"><div class="icon">🎨</div><h3>Custom UI</h3><p>Change title, buttons, theme, checkbox colors, dialog width, and dialog height.</p></div>
       </div>
     </section>
 
     <section class="section" id="features">
       <div class="section-head">
         <div class="eyebrow">What is new</div>
-        <h2>v10.1.2 focuses on modern Android support and professional developer experience.</h2>
-        <p>The new version improves storage behavior, dialog customization, file size filtering, stability, and documentation for Play Store-safe Android apps.</p>
+        <h2>v10.1.3 focuses on modern Android support and professional developer experience.</h2>
+        <p>The new version improves storage behavior, dialog customization, checkbox color customization, file size filtering, stability, and documentation for Play Store-safe Android apps.</p>
       </div>
       <div class="grid cols-3">
+        <div class="card">
+          <h3>v10.1.3 checkbox color customization</h3>
+          <ul>
+            <li>Customize checked checkbox color.</li>
+            <li>Customize unchecked checkbox border/background color.</li>
+            <li>Customize checkmark/tick color.</li>
+            <li>Customize unchecked inner fill color.</li>
+            <li>Fixes checkbox visibility issues on white or custom dialog backgrounds.</li>
+          </ul>
+        </div>
         <div class="card">
           <h3>v10.1.2 file size filtering</h3>
           <ul>
@@ -828,12 +838,12 @@ include ':app'</code></pre></div>
           <h3>Step 2: Add dependency in app/build.gradle</h3>
           <p>Open <strong>YourProject/app/build.gradle</strong> and add the dependency in the <code>dependencies</code> block.</p>
           <div class="code-wrap"><div class="code-top"><span>app/build.gradle</span><button class="copy-btn">Copy</button></div><pre><code>dependencies {
-    implementation "io.github.tutorialsandroid:filepicker:10.1.2"
+    implementation "io.github.tutorialsandroid:filepicker:10.1.3"
 }</code></pre></div>
 
           <h3>Kotlin DSL</h3>
           <div class="code-wrap"><div class="code-top"><span>app/build.gradle.kts</span><button class="copy-btn">Copy</button></div><pre><code>dependencies {
-    implementation("io.github.tutorialsandroid:filepicker:10.1.2")
+    implementation("io.github.tutorialsandroid:filepicker:10.1.3")
 }</code></pre></div>
         </div>
       </div>
@@ -853,7 +863,7 @@ include ':app'</code></pre></div>
 
           <h3>Step 2: Add JitPack dependency</h3>
           <div class="code-wrap"><div class="code-top"><span>app/build.gradle</span><button class="copy-btn">Copy</button></div><pre><code>dependencies {
-    implementation "com.github.TutorialsAndroid:FilePicker:v10.1.2"
+    implementation "com.github.TutorialsAndroid:FilePicker:v10.1.3"
 }</code></pre></div>
 
           <h3>Kotlin DSL</h3>
@@ -867,7 +877,7 @@ include ':app'</code></pre></div>
 }
 
 dependencies {
-    implementation("com.github.TutorialsAndroid:FilePicker:v10.1.2")
+    implementation("com.github.TutorialsAndroid:FilePicker:v10.1.3")
 }</code></pre></div>
         </div>
       </div>
@@ -875,7 +885,7 @@ dependencies {
       <div id="minSdk" class="tab-panel">
         <div class="card">
           <h3>Minimum SDK requirement</h3>
-          <p>FilePicker v10.1.2 requires <strong>minSdk 23</strong> or higher. Add this inside the <code>android { defaultConfig { ... } }</code> block of your app module Gradle file.</p>
+          <p>FilePicker v10.1.3 requires <strong>minSdk 23</strong> or higher. Add this inside the <code>android { defaultConfig { ... } }</code> block of your app module Gradle file.</p>
           <div class="code-wrap"><div class="code-top"><span>app/build.gradle</span><button class="copy-btn">Copy</button></div><pre><code>android {
     namespace "com.example.yourapp"
     compileSdk 35
@@ -1040,6 +1050,26 @@ properties.selection_type = DialogConfigs.FILE_AND_DIR_SELECT;</code></pre></div
         </div>
 
         <div class="card">
+          <h3>Checkbox color customization</h3>
+          <p>Useful when the default checkbox is not visible on white, dark, or fully custom dialog backgrounds.</p>
+          <div class="code-wrap"><div class="code-top"><span>Java</span><button class="copy-btn">Copy</button></div><pre><code>import android.graphics.Color;
+
+DialogProperties properties = new DialogProperties();
+
+properties.selection_mode = DialogConfigs.MULTI_MODE;
+properties.selection_type = DialogConfigs.DIR_SELECT;
+
+properties.checkbox_checked_color = Color.parseColor("#6750A4");
+properties.checkbox_unchecked_color = Color.parseColor("#6750A4");
+properties.checkbox_checkmark_color = Color.WHITE;
+properties.checkbox_unchecked_inner_color = Color.parseColor("#F3E8FF");
+
+FilePickerDialog dialog = new FilePickerDialog(MainActivity.this, properties);
+dialog.setTitle("Select Directory");
+dialog.show();</code></pre></div>
+        </div>
+
+        <div class="card">
           <h3>Dialog width and height</h3>
           <p>Useful for tablets, foldables, landscape screens, and ultra-wide layouts.</p>
           <div class="code-wrap"><div class="code-top"><span>Java</span><button class="copy-btn">Copy</button></div><pre><code>// 85% screen width and 75% screen height
@@ -1149,6 +1179,10 @@ private boolean hasRequiredAccess() {
                 <tr><td><code>error_dir</code></td><td>Fallback directory when root/offset is invalid.</td></tr>
                 <tr><td><code>extensions</code></td><td>Allowed file extensions.</td></tr>
                 <tr><td><code>show_hidden_files</code></td><td>Show or hide dot-files.</td></tr>
+                <tr><td><code>checkbox_checked_color</code></td><td>Color used when the checkbox is selected.</td></tr>
+                <tr><td><code>checkbox_unchecked_color</code></td><td>Outer color used when the checkbox is not selected.</td></tr>
+                <tr><td><code>checkbox_checkmark_color</code></td><td>Tick/checkmark color shown inside the selected checkbox.</td></tr>
+                <tr><td><code>checkbox_unchecked_inner_color</code></td><td>Inner fill color used when the checkbox is not selected.</td></tr>
                 <tr><td><code>min_file_size</code></td><td>Minimum allowed file size in bytes.</td></tr>
                 <tr><td><code>max_file_size</code></td><td>Maximum allowed file size in bytes.</td></tr>
               </tbody>
@@ -1218,6 +1252,10 @@ private boolean hasRequiredAccess() {
       <details>
         <summary>Can I change dialog theme?</summary>
         <p>Yes. Use the constructor that accepts a theme resource ID and pass a dialog-compatible AppCompat or Material Components theme.</p>
+      </details>
+      <details>
+        <summary>Can I change checkbox colors?</summary>
+        <p>Yes. From v10.1.3, use DialogProperties checkbox color fields to change the checked color, unchecked color, checkmark color, and unchecked inner color. This is useful when the checkbox overlaps with white or custom dialog backgrounds.</p>
       </details>
       <details>
         <summary>Can I change dialog width and height?</summary>
