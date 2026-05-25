@@ -8,8 +8,8 @@ android {
         applicationId "com.developer.filepicker.file"
         minSdkVersion 23
         targetSdkVersion 37
-        versionCode 17
-        versionName "10.1.2"
+        versionCode 18
+        versionName "10.1.3"
     }
     buildTypes {
         release {

@@ -11,6 +11,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.developer.filepicker.R;
+import com.developer.filepicker.model.DialogProperties;
 
 /**
  * Lightweight custom checkbox used by the file picker rows.
@@ -23,6 +24,11 @@ public class MaterialCheckbox extends View {
     private final Path tick = new Path();
     private boolean checked;
     private OnCheckedChangeListener onCheckedChangeListener;
+
+    private int checkedColor = DialogProperties.COLOR_NOT_SET;
+    private int uncheckedColor = Color.parseColor("#C1C1C1");
+    private int checkmarkColor = Color.WHITE;
+    private int uncheckedInnerColor = Color.WHITE;
 
     public MaterialCheckbox(Context context) {
         super(context);
@@ -67,10 +73,10 @@ public class MaterialCheckbox extends View {
 
         if (checked) {
             paint.setStyle(Paint.Style.FILL);
-            paint.setColor(getColorCompat(R.color.colorAccent));
+            paint.setColor(resolveCheckedColor());
             canvas.drawRoundRect(bounds, minDim / 8f, minDim / 8f, paint);
 
-            paint.setColor(Color.WHITE);
+            paint.setColor(checkmarkColor);
             paint.setStrokeWidth(Math.max(2f, minDim / 10f));
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeCap(Paint.Cap.ROUND);
@@ -78,11 +84,11 @@ public class MaterialCheckbox extends View {
             canvas.drawPath(tick, paint);
         } else {
             paint.setStyle(Paint.Style.FILL);
-            paint.setColor(Color.parseColor("#C1C1C1"));
+            paint.setColor(uncheckedColor);
             canvas.drawRoundRect(bounds, minDim / 8f, minDim / 8f, paint);
 
             bounds.set(minDim / 5f, minDim / 5f, minDim - (minDim / 5f), minDim - (minDim / 5f));
-            paint.setColor(Color.WHITE);
+            paint.setColor(uncheckedInnerColor);
             canvas.drawRect(bounds, paint);
         }
     }
@@ -119,6 +125,27 @@ public class MaterialCheckbox extends View {
 
     public void setOnCheckedChangedListener(OnCheckedChangeListener onCheckedChangeListener) {
         this.onCheckedChangeListener = onCheckedChangeListener;
+    }
+
+    /**
+     * Applies checkbox colors from DialogProperties.
+     */
+    public void setCheckboxColors(int checkedColor,
+                                  int uncheckedColor,
+                                  int checkmarkColor,
+                                  int uncheckedInnerColor) {
+        this.checkedColor = checkedColor;
+        this.uncheckedColor = uncheckedColor;
+        this.checkmarkColor = checkmarkColor;
+        this.uncheckedInnerColor = uncheckedInnerColor;
+        invalidate();
+    }
+
+    private int resolveCheckedColor() {
+        if (checkedColor == DialogProperties.COLOR_NOT_SET) {
+            return getColorCompat(R.color.colorAccent);
+        }
+        return checkedColor;
     }
 
     private int getColorCompat(int colorRes) {

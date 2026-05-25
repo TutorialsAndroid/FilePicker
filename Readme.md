@@ -49,7 +49,7 @@ If this library helps you, please consider supporting my open-source work.
 ## Table of Contents
 
 - [Overview](#overview)
-- [What is new in v10.1.2](#what-is-new-in-v1012)
+- [What is new in v10](#what-is-new-in-v10)
 - [Important Android storage reality](#important-android-storage-reality)
 - [Requirements](#requirements)
 - [Installation](#installation)
@@ -71,7 +71,7 @@ If this library helps you, please consider supporting my open-source work.
 - [Handling Android 14+ partial photo/video access](#handling-android-14-partial-photovideo-access)
 - [Play Store safe integration options](#play-store-safe-integration-options)
 - [Troubleshooting](#troubleshooting)
-- [Migration guide from v9.x to v10.1.2](#migration-guide-from-v9x-to-v1012)
+- [Migration guide from v9.x to v10.1.3](#migration-guide-from-v9x-to-v1013)
 - [Security and privacy recommendations](#security-and-privacy-recommendations)
 - [FAQ](#faq)
 - [Contributing](#contributing)
@@ -105,9 +105,13 @@ dialog.setDialogSelectionListener(files -> {
 
 ---
 
-## What is new in v10.1.2
+## What is new in v10
 
-Version `10.1.2` focuses on modern Android support, stability, clearer storage behavior, dialog customization, and advanced file filtering.
+Version `10.X.X` focuses on modern Android support, stability, clearer storage behavior, dialog customization, and advanced file filtering.
+
+### New in v10.1.3
+
+- From `v10.1.3`, FilePicker supports checkbox color customization through `DialogProperties`.
 
 ### New in v10.1.2
 
@@ -198,7 +202,7 @@ Official references:
 
 ## Installation
 
-FilePicker v10.1.1 is available through **Maven Central** and **JitPack**.
+FilePicker v10.1.3 is available through **Maven Central** and **JitPack**.
 
 Recommended installation method: **Maven Central**  
 Alternative installation method: **JitPack**
@@ -313,7 +317,7 @@ Add the FilePicker dependency inside the `dependencies` block.
 
 ```gradle
 dependencies {
-    implementation "io.github.tutorialsandroid:filepicker:10.1.2"
+    implementation "io.github.tutorialsandroid:filepicker:10.1.3"
 }
 ```
 
@@ -321,7 +325,7 @@ dependencies {
 
 ```kotlin
 dependencies {
-    implementation("io.github.tutorialsandroid:filepicker:10.1.2")
+    implementation("io.github.tutorialsandroid:filepicker:10.1.3")
 }
 ```
 
@@ -479,7 +483,7 @@ Add the dependency inside the `dependencies` block.
 
 ```gradle
 dependencies {
-    implementation "com.github.TutorialsAndroid:FilePicker:v10.1.2"
+    implementation "com.github.TutorialsAndroid:FilePicker:v10.1.3"
 }
 ```
 
@@ -487,7 +491,7 @@ dependencies {
 
 ```kotlin
 dependencies {
-    implementation("com.github.TutorialsAndroid:FilePicker:v10.1.2")
+    implementation("com.github.TutorialsAndroid:FilePicker:v10.1.3")
 }
 ```
 
@@ -526,13 +530,13 @@ android {
 For production apps, Maven Central is recommended:
 
 ```gradle
-implementation "io.github.tutorialsandroid:filepicker:10.1.2"
+implementation "io.github.tutorialsandroid:filepicker:10.1.3"
 ```
 
 Use JitPack only if you specifically want to fetch the library directly from GitHub:
 
 ```gradle
-implementation "com.github.TutorialsAndroid:FilePicker:v10.1.2"
+implementation "com.github.TutorialsAndroid:FilePicker:v10.1.3"
 ```
 
 ---
@@ -578,7 +582,7 @@ Only use the old `allprojects` method if your project is very old and does not h
 
 ```gradle
 dependencies {
-    implementation "io.github.tutorialsandroid:filepicker:10.1.2"
+    implementation "io.github.tutorialsandroid:filepicker:10.1.3"
 }
 ```
 
@@ -586,7 +590,7 @@ dependencies {
 
 ```gradle
 dependencies {
-    implementation "com.github.TutorialsAndroid:FilePicker:v10.1.2"
+    implementation "com.github.TutorialsAndroid:FilePicker:v10.1.3"
 }
 ```
 
@@ -923,6 +927,46 @@ FilePickerDialog dialog = new FilePickerDialog(
 - Do not use a full-screen activity theme as the dialog theme unless you intentionally want full-screen behavior.
 
 ---
+
+## Customizing checkbox colors
+
+From `v10.1.3`, FilePicker supports checkbox color customization through `DialogProperties`.
+
+This is useful when the default checkbox colors do not match your app theme, or when the unchecked checkbox blends into a white/light background.
+
+```java
+import android.graphics.Color;
+
+DialogProperties properties = new DialogProperties();
+
+properties.selection_mode = DialogConfigs.MULTI_MODE;
+properties.selection_type = DialogConfigs.DIR_SELECT;
+
+// Checked checkbox fill color
+properties.checkbox_checked_color = Color.parseColor("#6750A4");
+
+// Unchecked checkbox outer/background color
+properties.checkbox_unchecked_color = Color.parseColor("#6750A4");
+
+// Tick/checkmark color shown when checked
+properties.checkbox_checkmark_color = Color.WHITE;
+
+// Inner color shown when unchecked
+properties.checkbox_unchecked_inner_color = Color.parseColor("#F3E8FF");
+
+FilePickerDialog dialog = new FilePickerDialog(MainActivity.this, properties);
+dialog.setTitle("Select Directory");
+dialog.show();
+```
+
+### Notes
+
+- `checkbox_checked_color` controls the selected checkbox fill color.
+- `checkbox_unchecked_color` controls the unchecked checkbox outer/background color.
+- `checkbox_checkmark_color` controls the tick/checkmark color.
+- `checkbox_unchecked_inner_color` controls the inner unchecked color.
+- If `checkbox_checked_color` is not set, FilePicker uses the existing `R.color.colorAccent` fallback.
+- This works for file selection, directory selection, and file + directory selection.
 
 ## Changing dialog width and height
 
@@ -1908,7 +1952,7 @@ Possible causes:
 
 ---
 
-## Migration guide from v9.x to v10.1.2
+## Migration guide from v9.x to v10.1.3
 
 ### 1. Update dependency
 
@@ -1965,7 +2009,7 @@ Only use `MANAGE_EXTERNAL_STORAGE` when the answer is policy-safe.
 
 ### 5. Update dialog size usage if needed
 
-If your old app looked too narrow on landscape, tablet, foldable, or ultra-wide screens, use the v10.1.2 sizing API:
+If your old app looked too narrow on landscape, tablet, foldable, or ultra-wide screens, use the v10.1.3 sizing API:
 
 ```java
 dialog.setDialogSizeByPercent(0.85f, 0.75f);

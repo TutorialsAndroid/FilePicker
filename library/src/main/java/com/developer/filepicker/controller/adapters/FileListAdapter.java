@@ -72,6 +72,12 @@ public class FileListAdapter extends BaseAdapter {
         applySelectionAnimation(convertView, item);
         bindIcon(holder, item);
         bindTexts(holder, item, isParentRow);
+        holder.checkbox.setCheckboxColors(
+                properties.checkbox_checked_color,
+                properties.checkbox_unchecked_color,
+                properties.checkbox_checkmark_color,
+                properties.checkbox_unchecked_inner_color
+        );
 
         holder.checkbox.setOnCheckedChangedListener(null);
         holder.checkbox.setVisibility(isSelectable ? View.VISIBLE : View.INVISIBLE);
