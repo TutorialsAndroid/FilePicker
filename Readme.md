@@ -18,6 +18,44 @@ Select files, folders, or both from device storage with single-selection and mul
 
 ---
 
+<div align="center">
+
+## 🌐 Explore the Official FilePicker Landing Page
+
+Experience the complete documentation, installation guide, Android storage notes, Play Store compliance guidance, customization examples, and API reference in a clean visual format.
+
+<br>
+
+<a href="https://tutorialsandroid.github.io/FilePicker/" target="_blank">
+  <img src="https://img.shields.io/badge/View%20Landing%20Page-FilePicker%20Docs-2563EB?style=for-the-badge&logo=githubpages&logoColor=white" alt="View FilePicker Landing Page">
+</a>
+
+<a href="https://github.com/TutorialsAndroid/FilePicker" target="_blank">
+  <img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Repository">
+</a>
+
+<a href="https://github.com/sponsors/TutorialsAndroid" target="_blank">
+  <img src="https://img.shields.io/badge/Sponsor%20Project-GitHub%20Sponsors-EA4AAA?style=for-the-badge&logo=githubsponsors&logoColor=white" alt="Sponsor FilePicker">
+</a>
+
+<br><br>
+
+<table>
+  <tr>
+    <td align="center"><strong>📦 Installation</strong><br>Maven Central + JitPack setup</td>
+    <td align="center"><strong>🛡️ Play Store Guide</strong><br>Storage policy and compliance notes</td>
+    <td align="center"><strong>🎨 Customization</strong><br>Theme, dialog size, filters, and examples</td>
+  </tr>
+</table>
+
+<br>
+
+<strong>Recommended for new users:</strong> Start with the landing page for the fastest setup and complete Android version-wise guidance.
+
+</div>
+
+---
+
 Community links:
 
 - Instagram: https://instagram.com/coderx09
