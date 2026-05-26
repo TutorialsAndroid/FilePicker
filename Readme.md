@@ -7,7 +7,7 @@
 **A lightweight Android file and directory picker library for Java/Kotlin Android apps.**
 
 [![API](https://img.shields.io/badge/API-23%2B-brightgreen.svg?style=flat)](#requirements)
-![Maven Central](https://img.shields.io/maven-central/v/io.github.tutorialsandroid/filepicker)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.tutorialsandroid/filepicker)](https://central.sonatype.com/artifact/io.github.tutorialsandroid/filepicker)
 [![](https://jitpack.io/v/TutorialsAndroid/FilePicker.svg)](https://jitpack.io/#TutorialsAndroid/FilePicker)
 [![License](https://img.shields.io/badge/License-Apache%202.0-orange.svg)](https://opensource.org/licenses/Apache-2.0)
 [![AndroidX](https://img.shields.io/badge/AndroidX-supported-brightgreen)](#requirements)
